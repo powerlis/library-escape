@@ -107,7 +107,7 @@ __의 완성은 삶이기에.
   story:
 `도서관 시스템 오류로 책 제목 일부가 사라졌습니다.
 
-다음 책 제목에서 사라진 한 글자를 입력하세요.
+다음 책 제목에서 사라진 두 글자를 입력하세요.
 
 전지적 ○○시점
 
@@ -671,7 +671,7 @@ async function loadRanking() {
     const q = query(
       collection(db, "escapeRankings"),
       orderBy("usedTime", "asc"),
-      limit(10)
+      limit(50)
     );
 
     const snapshot = await getDocs(q);
