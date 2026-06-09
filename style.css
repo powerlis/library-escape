@@ -658,3 +658,10 @@ input:focus {
   font-weight: 900;
   font-size: 0.86rem;
 }
+
+.badge-icon {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+  display: block;
+}
