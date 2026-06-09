@@ -685,15 +685,11 @@ input:focus {
 }
 .calligraphy-title {
   font-family: "Nanum Pen Script", cursive;
-  font-size: 1.55em;
+  font-size: 1.65em;
   font-weight: 400;
-  letter-spacing: -0.03em;
   color: #3157ff;
-  text-shadow:
-    2px 2px 0 #ffcf4a,
-    4px 4px 12px rgba(49, 87, 255, 0.18);
-  display: inline-block;
-  transform: rotate(-2deg);
+
+  text-shadow: none;
 }
 
 .ranking-title {
