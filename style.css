@@ -949,3 +949,22 @@ body.dark-mode .result-box span {
 body.dark-mode .result-box strong {
   color: #ffe082;
 }
+
+.reward-notice {
+  margin-top: 18px;
+  text-align: center;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  color: #3157ff;
+  font-weight: 900;
+  line-height: 1.7;
+  font-size: 0.92rem;
+}
+
+.reward-notice p {
+  margin: 2px 0;
+}
+.book-red {
+  color: #ff4d5a;
+}
