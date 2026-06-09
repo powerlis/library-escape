@@ -282,30 +282,56 @@ function typeMissionStory(text) {
   els.missionStory.innerHTML = "";
 
   const lines = text.split("\n");
-  let lineIndex = 0;
 
-  function showNextLine() {
+  let lineIndex = 0;
+  let charIndex = 0;
+  let currentLineElement = null;
+
+  function typeNextCharacter() {
     if (lineIndex >= lines.length) {
       const cursor = els.missionStory.querySelector(".typing-cursor");
       if (cursor) cursor.classList.remove("typing-cursor");
       return;
     }
 
-    const previousCursor = els.missionStory.querySelector(".typing-cursor");
-    if (previousCursor) previousCursor.classList.remove("typing-cursor");
+    if (charIndex === 0) {
+      const oldCursor = els.missionStory.querySelector(".typing-cursor");
+      if (oldCursor) oldCursor.classList.remove("typing-cursor");
 
-    const line = document.createElement("span");
-    line.className = "typing-line typing-cursor";
-    line.textContent = lines[lineIndex] || " ";
-    els.missionStory.appendChild(line);
+      currentLineElement = document.createElement("span");
+      currentLineElement.className = "typing-line typing-cursor";
+      els.missionStory.appendChild(currentLineElement);
+    }
 
-    lineIndex++;
+    const currentLineText = lines[lineIndex];
 
-    const timer = setTimeout(showNextLine, 430);
-    typingTimerIds.push(timer);
+    if (currentLineText.length === 0) {
+      currentLineElement.innerHTML = "&nbsp;";
+
+      lineIndex++;
+      charIndex = 0;
+
+      const timer = setTimeout(typeNextCharacter, 220);
+      typingTimerIds.push(timer);
+      return;
+    }
+
+    currentLineElement.textContent += currentLineText[charIndex];
+    charIndex++;
+
+    if (charIndex >= currentLineText.length) {
+      lineIndex++;
+      charIndex = 0;
+
+      const timer = setTimeout(typeNextCharacter, 360);
+      typingTimerIds.push(timer);
+    } else {
+      const timer = setTimeout(typeNextCharacter, 45);
+      typingTimerIds.push(timer);
+    }
   }
 
-  showNextLine();
+  typeNextCharacter();
 }
 
 function renderMission() {
