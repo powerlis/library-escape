@@ -160,11 +160,42 @@ h1 span {
 }
 
 .calligraphy-title {
-  font-family: "Nanum Pen Script", "Gowun Dodum", cursive;
-  font-size: 1.65em;
-  font-weight: 400;
-  color: #3157ff;
+  display: inline-block;
+  margin-top: 4px;
+  padding: 4px 16px 7px;
+  font-family: "Gowun Batang", serif;
+  font-size: 1.02em;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  color: #2f477e;
   text-shadow: none !important;
+  background:
+    linear-gradient(180deg, rgba(255, 250, 232, 0.95), rgba(255, 238, 191, 0.55));
+  border-radius: 16px 8px 18px 8px;
+  box-shadow:
+    inset 0 -8px 0 rgba(255, 207, 74, 0.24),
+    0 8px 18px rgba(97, 70, 30, 0.08);
+  position: relative;
+}
+
+.calligraphy-title::before {
+  content: "";
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 5px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(89, 63, 26, 0.38), transparent);
+  border-radius: 999px;
+}
+
+.calligraphy-title::after {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  border-radius: 14px 8px 16px 8px;
+  border: 1px solid rgba(138, 98, 0, 0.13);
+  pointer-events: none;
 }
 
 .subtitle {
