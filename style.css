@@ -1,19 +1,17 @@
 :root {
-  --bg1: #10182f;
-  --bg2: #17264a;
+  --bg-main: #fff8df;
+  --bg-sub: #eaf3ff;
   --card: rgba(255, 255, 255, 0.96);
   --text: #172036;
   --muted: #667085;
-  --primary: #ffcf4a;
-  --primary-dark: #f5a800;
-  --blue: #4868ff;
+  --yellow: #ffcf4a;
+  --yellow-dark: #ffb800;
+  --blue: #3157ff;
   --pink: #ff6fae;
-  --green: #56d68a;
+  --green: #12a36d;
   --danger: #ff5d5d;
-  --shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
-  --radius-xl: 30px;
-  --radius-lg: 22px;
-  --radius-md: 16px;
+  --shadow: 0 20px 55px rgba(49, 87, 255, 0.16);
+  --radius-xl: 32px;
 }
 
 * {
@@ -27,9 +25,9 @@ body {
   font-family: "Noto Sans KR", "Gowun Dodum", sans-serif;
   color: var(--text);
   background:
-    radial-gradient(circle at 20% 10%, rgba(255, 207, 74, 0.32), transparent 28%),
-    radial-gradient(circle at 85% 20%, rgba(255, 111, 174, 0.28), transparent 28%),
-    linear-gradient(135deg, var(--bg1), var(--bg2));
+    radial-gradient(circle at 10% 5%, rgba(255, 207, 74, 0.55), transparent 24%),
+    radial-gradient(circle at 90% 88%, rgba(255, 111, 174, 0.35), transparent 26%),
+    linear-gradient(135deg, #fff9e8 0%, #eaf3ff 48%, #fff0f7 100%);
   overflow-x: hidden;
 }
 
@@ -38,43 +36,52 @@ input {
   font-family: inherit;
 }
 
-.bg-noise {
+.bg-pattern {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  opacity: 0.14;
+  opacity: 0.12;
   background-image:
-    linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
+    linear-gradient(rgba(49,87,255,.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(49,87,255,.08) 1px, transparent 1px);
   background-size: 34px 34px;
 }
 
-.bg-orb {
+.bg-blob {
   position: fixed;
-  border-radius: 50%;
-  filter: blur(6px);
-  opacity: 0.7;
+  border-radius: 999px;
+  filter: blur(4px);
   pointer-events: none;
+  opacity: 0.72;
 }
 
-.orb-one {
-  width: 220px;
-  height: 220px;
-  background: var(--primary);
-  top: -80px;
-  left: -90px;
+.blob-yellow {
+  width: 190px;
+  height: 190px;
+  background: #ffdb5c;
+  top: -70px;
+  left: -65px;
 }
 
-.orb-two {
-  width: 240px;
-  height: 240px;
-  background: var(--pink);
-  right: -100px;
+.blob-pink {
+  width: 230px;
+  height: 230px;
+  background: #ff9ac7;
+  right: -90px;
   bottom: -90px;
 }
 
+.blob-blue {
+  width: 160px;
+  height: 160px;
+  background: #b9c8ff;
+  right: 14%;
+  top: 8%;
+  opacity: 0.45;
+}
+
 .app-shell {
-  width: min(100%, 900px);
+  width: min(100%, 940px);
   min-height: 100vh;
   margin: 0 auto;
   padding: 28px 18px 42px;
@@ -100,41 +107,41 @@ input {
 .ranking-card {
   width: 100%;
   background: var(--card);
-  border: 3px solid rgba(255,255,255,0.82);
+  border: 3px solid #ffffff;
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow);
   backdrop-filter: blur(16px);
 }
 
 .hero-card {
-  max-width: 520px;
-  padding: 30px 22px 24px;
+  max-width: 540px;
+  padding: 34px 24px 26px;
   text-align: center;
   animation: popIn .45s ease both;
 }
 
 .school-badge {
   display: inline-flex;
-  padding: 8px 14px;
+  padding: 8px 15px;
   margin-bottom: 12px;
   border-radius: 999px;
-  background: #eaf0ff;
-  color: var(--blue);
+  background: #e8f7ef;
+  color: var(--green);
   font-weight: 900;
-  font-size: 0.85rem;
+  font-size: 0.86rem;
 }
 
 .eyebrow {
   margin: 0 0 8px;
   font-size: 0.78rem;
   font-weight: 900;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
   color: var(--pink);
 }
 
 h1 {
   margin: 0;
-  font-size: clamp(2.25rem, 9vw, 4rem);
+  font-size: clamp(2.35rem, 9vw, 4rem);
   line-height: 1.05;
   font-weight: 900;
   letter-spacing: -0.06em;
@@ -142,14 +149,14 @@ h1 {
 
 h1 span {
   color: var(--blue);
-  text-shadow: 3px 3px 0 var(--primary);
+  text-shadow: 3px 3px 0 var(--yellow);
 }
 
 .subtitle {
   margin: 18px 0 20px;
-  line-height: 1.7;
+  line-height: 1.75;
   color: #334155;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .info-grid {
@@ -160,22 +167,22 @@ h1 span {
 }
 
 .info-grid div {
-  border-radius: 18px;
-  background: #fff6d7;
-  padding: 13px 6px;
+  border-radius: 20px;
+  background: #fff7d7;
+  padding: 14px 6px;
   border: 2px solid #ffe58a;
 }
 
 .info-grid strong {
   display: block;
-  font-size: 1.15rem;
+  font-size: 1.18rem;
   font-weight: 900;
 }
 
 .info-grid span {
   font-size: 0.78rem;
   color: #6b5a00;
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .input-box,
@@ -193,9 +200,9 @@ label {
 
 input {
   width: 100%;
-  min-height: 52px;
+  min-height: 54px;
   border: 2px solid #d8def0;
-  border-radius: 18px;
+  border-radius: 19px;
   padding: 0 16px;
   font-size: 1rem;
   outline: none;
@@ -204,30 +211,30 @@ input {
 
 input:focus {
   border-color: var(--blue);
-  box-shadow: 0 0 0 5px rgba(72,104,255,0.13);
+  box-shadow: 0 0 0 5px rgba(49,87,255,0.13);
 }
 
 .primary-btn,
 .ghost-btn {
   width: 100%;
-  min-height: 54px;
+  min-height: 56px;
   margin-top: 12px;
   border: 0;
-  border-radius: 18px;
-  font-size: 1.02rem;
+  border-radius: 20px;
+  font-size: 1.03rem;
   font-weight: 900;
   cursor: pointer;
-  transition: transform .15s ease, box-shadow .15s ease, opacity .15s ease;
+  transition: transform .15s ease, box-shadow .15s ease;
 }
 
 .primary-btn {
-  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  background: linear-gradient(135deg, var(--yellow), var(--yellow-dark));
   color: #231900;
-  box-shadow: 0 10px 24px rgba(245, 168, 0, 0.28);
+  box-shadow: 0 10px 24px rgba(255, 184, 0, 0.28);
 }
 
 .ghost-btn {
-  background: #eef2ff;
+  background: #eef4ff;
   color: var(--blue);
 }
 
@@ -240,13 +247,12 @@ input:focus {
   margin: 16px 0 0;
   color: var(--muted);
   font-size: 0.82rem;
-  line-height: 1.55;
+  line-height: 1.6;
 }
 
-/* 게임 화면 */
 .game-layout {
   width: 100%;
-  max-width: 860px;
+  max-width: 880px;
 }
 
 .game-header {
@@ -256,52 +262,55 @@ input:focus {
   align-items: center;
   justify-content: space-between;
   margin-bottom: 14px;
-  color: white;
+  color: #1f2937;
 }
 
 .mini-label {
   margin: 0;
-  color: var(--primary);
+  color: var(--pink);
   font-size: 0.74rem;
   font-weight: 900;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
 }
 
 .game-header h2 {
   margin: 3px 0 0;
-  font-size: clamp(1.5rem, 4vw, 2.2rem);
+  font-size: clamp(1.6rem, 4vw, 2.25rem);
   line-height: 1.25;
   letter-spacing: -0.04em;
+  color: var(--blue);
 }
 
 .timer-box {
-  min-width: 120px;
-  border-radius: 22px;
-  background: rgba(255,255,255,.12);
-  border: 1px solid rgba(255,255,255,.22);
-  color: white;
+  min-width: 128px;
+  border-radius: 24px;
+  background: #ffffff;
+  border: 2px solid #ffe58a;
+  color: #1f2937;
   text-align: center;
   padding: 12px 10px;
+  box-shadow: 0 10px 26px rgba(255, 184, 0, 0.12);
 }
 
 .timer-box span {
   display: block;
   font-weight: 900;
   font-size: 1.45rem;
-  color: var(--primary);
+  color: #f5a800;
 }
 
 .timer-box small {
   display: block;
   font-size: .72rem;
-  opacity: .85;
+  opacity: .75;
   margin-top: 2px;
+  font-weight: 800;
 }
 
 .progress-wrap {
   width: 100%;
   height: 13px;
-  background: rgba(255,255,255,.18);
+  background: rgba(49, 87, 255, 0.14);
   border-radius: 999px;
   overflow: hidden;
   margin-bottom: 14px;
@@ -310,19 +319,19 @@ input:focus {
 .progress-bar {
   height: 100%;
   width: 0%;
-  background: linear-gradient(90deg, var(--primary), var(--green));
+  background: linear-gradient(90deg, var(--yellow), #79e29e);
   transition: width .35s ease;
 }
 
 .mission-card {
-  padding: 30px 30px;
+  padding: 30px;
 }
 
 .mission-tag {
   display: inline-flex;
   border-radius: 999px;
-  background: #e9f9ef;
-  color: #087443;
+  background: #e8f7ef;
+  color: var(--green);
   padding: 8px 14px;
   font-size: 0.9rem;
   font-weight: 900;
@@ -331,19 +340,33 @@ input:focus {
 
 .mission-story {
   margin: 0 0 22px;
-  white-space: pre-line;
+  min-height: 260px;
   line-height: 2;
   color: #243042;
-  font-weight: 650;
+  font-weight: 700;
   font-size: 1.08rem;
   word-break: keep-all;
+}
+
+.typing-line {
+  display: block;
+  opacity: 0;
+  transform: translateY(16px);
+  animation: riseText 0.36s ease forwards;
+}
+
+.typing-cursor::after {
+  content: "▌";
+  margin-left: 3px;
+  color: var(--blue);
+  animation: blink 0.8s infinite;
 }
 
 .hint-box {
   margin: 14px 0 20px;
   padding: 16px;
   border-radius: 18px;
-  background: #fff6d7;
+  background: #fff7d7;
   border: 2px dashed #f5c12d;
 }
 
@@ -355,6 +378,7 @@ input:focus {
   margin: 6px 0 0;
   line-height: 1.6;
   color: #5f4300;
+  font-weight: 700;
 }
 
 .hidden {
@@ -369,7 +393,7 @@ input:focus {
 }
 
 .feedback.ok {
-  color: #087443;
+  color: var(--green);
 }
 
 .feedback.no {
@@ -393,7 +417,7 @@ input:focus {
   display: block;
   font-size: .78rem;
   color: var(--muted);
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .status-card strong {
@@ -403,11 +427,10 @@ input:focus {
   font-weight: 900;
 }
 
-/* 엔딩 / 랭킹 */
 .ending-card,
 .ranking-card {
-  max-width: 560px;
-  padding: 30px 22px 24px;
+  max-width: 570px;
+  padding: 32px 24px 26px;
   text-align: center;
 }
 
@@ -416,13 +439,14 @@ input:focus {
   margin: 0;
   font-size: 2rem;
   letter-spacing: -0.05em;
+  color: var(--blue);
 }
 
 #endingText,
 .ranking-desc {
   color: #344054;
-  line-height: 1.7;
-  font-weight: 600;
+  line-height: 1.75;
+  font-weight: 700;
 }
 
 .result-box {
@@ -473,7 +497,7 @@ input:focus {
   border-radius: 50%;
   display: grid;
   place-items: center;
-  background: var(--primary);
+  background: var(--yellow);
   color: #2b1d00;
   font-weight: 900;
 }
@@ -495,7 +519,7 @@ input:focus {
 
 .empty-text {
   color: var(--muted);
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .toast {
@@ -509,7 +533,7 @@ input:focus {
   border-radius: 18px;
   background: rgba(20, 28, 48, .94);
   color: white;
-  font-weight: 800;
+  font-weight: 900;
   text-align: center;
   opacity: 0;
   pointer-events: none;
@@ -534,7 +558,23 @@ input:focus {
   }
 }
 
-/* 스마트폰 최적화 */
+@keyframes riseText {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes blink {
+  0%, 50% {
+    opacity: 1;
+  }
+
+  51%, 100% {
+    opacity: 0;
+  }
+}
+
 @media (max-width: 640px) {
   .app-shell {
     width: 100%;
@@ -547,7 +587,7 @@ input:focus {
   }
 
   .hero-card {
-    padding: 26px 18px 22px;
+    padding: 28px 18px 22px;
   }
 
   h1 {
@@ -569,6 +609,7 @@ input:focus {
   }
 
   .mission-story {
+    min-height: 250px;
     font-size: 1rem;
     line-height: 1.85;
   }

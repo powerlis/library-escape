@@ -10,9 +10,6 @@ import {
   getDocs
 } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
 
-/*
-  Firebase 콘솔에서 복사한 설정값으로 아래 부분을 교체하세요.
-*/
 const firebaseConfig = {
   apiKey: "AIzaSyBQa3LJ7a7QPbDLR8NkFyBe-CM9Sg4C8RY",
   authDomain: "library-escape.firebaseapp.com",
@@ -35,7 +32,7 @@ try {
 }
 
 const TOTAL_TIME = 20 * 60;
-const STORAGE_KEY = "libraryEscapeState_v2";
+const STORAGE_KEY = "libraryEscapeState_v3";
 
 const missions = [
   {
@@ -88,9 +85,9 @@ const missions = [
     hint: "제목에도 들어 있고, 시 전체의 중심 이미지입니다."
   },
   {
-  title: "왜곡된 기록 1",
-  tag: "책 제목 복구",
-  story:
+    title: "왜곡된 기록 1",
+    tag: "책 제목 복구",
+    story:
 `도서관 시스템 오류로 책 제목 일부가 사라졌습니다.
 
 다음 책 제목에서 사라진 한 글자를 입력하세요.
@@ -98,13 +95,13 @@ const missions = [
 ○ 득 이
 
 정답은 한 글자입니다.`,
-  answer: ["완"],
-  hint: "김려령 작가의 청소년소설입니다."
-},
-{
-  title: "왜곡된 기록 2",
-  tag: "책 제목 복구",
-  story:
+    answer: ["완"],
+    hint: "김려령 작가의 청소년소설입니다."
+  },
+  {
+    title: "왜곡된 기록 2",
+    tag: "책 제목 복구",
+    story:
 `두 번째 책 제목도 손상되었습니다.
 
 다음 책 제목에서 사라진 한 글자를 입력하세요.
@@ -112,9 +109,9 @@ const missions = [
 아 ○ 드
 
 정답은 한 글자입니다.`,
-  answer: ["몬"],
-  hint: "감정을 잘 느끼지 못하는 소년의 성장 이야기입니다."
-},
+    answer: ["몬"],
+    hint: "감정을 잘 느끼지 못하는 소년의 성장 이야기입니다."
+  },
   {
     title: "마지막 기록",
     tag: "FINAL MISSION",
@@ -182,6 +179,7 @@ let state = {
 };
 
 let timerId = null;
+let typingTimerIds = [];
 
 function normalize(value) {
   return String(value)
@@ -225,6 +223,7 @@ function resetState() {
     completed: false
   };
   stopTimer();
+  clearTypingTimers();
 }
 
 function toast(message) {
@@ -273,12 +272,48 @@ function stopTimer() {
   timerId = null;
 }
 
+function clearTypingTimers() {
+  typingTimerIds.forEach(id => clearTimeout(id));
+  typingTimerIds = [];
+}
+
+function typeMissionStory(text) {
+  clearTypingTimers();
+  els.missionStory.innerHTML = "";
+
+  const lines = text.split("\n");
+  let lineIndex = 0;
+
+  function showNextLine() {
+    if (lineIndex >= lines.length) {
+      const cursor = els.missionStory.querySelector(".typing-cursor");
+      if (cursor) cursor.classList.remove("typing-cursor");
+      return;
+    }
+
+    const previousCursor = els.missionStory.querySelector(".typing-cursor");
+    if (previousCursor) previousCursor.classList.remove("typing-cursor");
+
+    const line = document.createElement("span");
+    line.className = "typing-line typing-cursor";
+    line.textContent = lines[lineIndex] || " ";
+    els.missionStory.appendChild(line);
+
+    lineIndex++;
+
+    const timer = setTimeout(showNextLine, 430);
+    typingTimerIds.push(timer);
+  }
+
+  showNextLine();
+}
+
 function renderMission() {
   const mission = missions[state.currentMission];
 
   els.missionTitle.textContent = mission.title;
   els.missionTag.textContent = mission.tag;
-  els.missionStory.textContent = mission.story;
+  typeMissionStory(mission.story);
   els.missionHint.textContent = mission.hint;
   els.missionHintBox.classList.add("hidden");
   els.answerInput.value = "";
@@ -367,6 +402,7 @@ function showHint() {
 
 async function completeGame() {
   stopTimer();
+  clearTypingTimers();
 
   state.completed = true;
   state.endTime = Date.now();
@@ -393,6 +429,7 @@ async function completeGame() {
 
 function failGame() {
   stopTimer();
+  clearTypingTimers();
 
   state.completed = true;
   saveState();
@@ -443,7 +480,6 @@ async function loadRanking() {
     const q = query(
       collection(db, "escapeRankings"),
       orderBy("usedTime", "asc"),
-      orderBy("hintUsed", "asc"),
       limit(10)
     );
 
@@ -481,7 +517,7 @@ async function loadRanking() {
     els.rankingList.innerHTML = `
       <p class="empty-text">
         랭킹을 불러오지 못했습니다.<br>
-        Firestore 색인 또는 보안 규칙을 확인해 주세요.
+        Firestore 보안 규칙을 확인해 주세요.
       </p>`;
   }
 }
