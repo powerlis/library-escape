@@ -11,9 +11,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
 
 /*
-  1. Firebase 콘솔에서 웹앱을 만든 뒤 아래 firebaseConfig 값을 교체하세요.
-  2. Firestore Database를 생성하세요.
-  3. 컬렉션명은 escapeRankings를 사용합니다.
+  Firebase 콘솔에서 복사한 설정값으로 아래 부분을 교체하세요.
 */
 const firebaseConfig = {
   apiKey: "AIzaSyBQa3LJ7a7QPbDLR8NkFyBe-CM9Sg4C8RY",
@@ -36,8 +34,8 @@ try {
   console.warn("Firebase 초기화 실패:", error);
 }
 
-const TOTAL_TIME = 20 * 60; // 20분
-const STORAGE_KEY = "libraryEscapeState_v1";
+const TOTAL_TIME = 20 * 60;
+const STORAGE_KEY = "libraryEscapeState_v2";
 
 const missions = [
   {
@@ -251,6 +249,7 @@ function remainingSeconds() {
 
 function startTimer() {
   stopTimer();
+
   timerId = setInterval(() => {
     const remain = remainingSeconds();
     els.timer.textContent = formatTime(remain);
@@ -291,8 +290,11 @@ function renderMission() {
   const progress = (state.currentMission / missions.length) * 100;
   els.progressBar.style.width = `${progress}%`;
 
-  els.answerInput.focus();
   saveState();
+
+  setTimeout(() => {
+    els.answerInput.focus();
+  }, 100);
 }
 
 function startGame() {
@@ -363,6 +365,7 @@ function showHint() {
 
 async function completeGame() {
   stopTimer();
+
   state.completed = true;
   state.endTime = Date.now();
   saveState();
@@ -373,6 +376,7 @@ async function completeGame() {
   els.resultTeam.textContent = state.teamName;
   els.resultTime.textContent = formatTime(usedTime);
   els.resultHints.textContent = `${state.hintUsed}회`;
+
   els.endingText.textContent =
     "도서관 시스템이 정상화되었습니다. 책은 읽는 순간 끝나는 것이 아니라, 사람 안에 기억으로 남습니다.";
 
@@ -387,12 +391,14 @@ async function completeGame() {
 
 function failGame() {
   stopTimer();
+
   state.completed = true;
   saveState();
 
   els.resultTeam.textContent = state.teamName;
   els.resultTime.textContent = "실패";
   els.resultHints.textContent = `${state.hintUsed}회`;
+
   els.endingText.textContent =
     "제한시간이 종료되었습니다. 도서관 기록 복구에 실패했습니다. 다시 도전해 보세요.";
 
@@ -419,6 +425,7 @@ async function saveRanking(result) {
 
 async function loadRanking() {
   showScreen("ranking");
+
   els.rankingList.innerHTML = `<p class="empty-text">랭킹을 불러오는 중...</p>`;
 
   if (!firebaseReady || !db) {
@@ -450,8 +457,10 @@ async function loadRanking() {
 
     snapshot.forEach(doc => {
       const data = doc.data();
+
       const item = document.createElement("div");
       item.className = "rank-item";
+
       item.innerHTML = `
         <div class="rank-num">${rank}</div>
         <div>
@@ -460,11 +469,13 @@ async function loadRanking() {
         </div>
         <div class="rank-time">${formatTime(data.usedTime || 0)}</div>
       `;
+
       els.rankingList.appendChild(item);
       rank++;
     });
   } catch (error) {
     console.error(error);
+
     els.rankingList.innerHTML = `
       <p class="empty-text">
         랭킹을 불러오지 못했습니다.<br>

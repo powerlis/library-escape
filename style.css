@@ -1,7 +1,7 @@
 :root {
   --bg1: #10182f;
   --bg2: #17264a;
-  --card: rgba(255, 255, 255, 0.94);
+  --card: rgba(255, 255, 255, 0.96);
   --text: #172036;
   --muted: #667085;
   --primary: #ffcf4a;
@@ -20,7 +20,8 @@
   box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   margin: 0;
   min-height: 100%;
   font-family: "Noto Sans KR", "Gowun Dodum", sans-serif;
@@ -32,7 +33,8 @@ html, body {
   overflow-x: hidden;
 }
 
-button, input {
+button,
+input {
   font-family: inherit;
 }
 
@@ -40,7 +42,7 @@ button, input {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  opacity: 0.17;
+  opacity: 0.14;
   background-image:
     linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
@@ -72,23 +74,23 @@ button, input {
 }
 
 .app-shell {
-  width: min(100%, 520px);
+  width: min(100%, 900px);
   min-height: 100vh;
   margin: 0 auto;
-  padding: 22px 16px 34px;
+  padding: 28px 18px 42px;
   position: relative;
   z-index: 1;
 }
 
 .screen {
   display: none;
-  min-height: calc(100vh - 56px);
-  align-items: center;
-  justify-content: center;
+  min-height: calc(100vh - 70px);
 }
 
 .screen.active {
   display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .hero-card,
@@ -105,6 +107,7 @@ button, input {
 }
 
 .hero-card {
+  max-width: 520px;
   padding: 30px 22px 24px;
   text-align: center;
   animation: popIn .45s ease both;
@@ -131,7 +134,7 @@ button, input {
 
 h1 {
   margin: 0;
-  font-size: clamp(2.25rem, 11vw, 4rem);
+  font-size: clamp(2.25rem, 9vw, 4rem);
   line-height: 1.05;
   font-weight: 900;
   letter-spacing: -0.06em;
@@ -240,11 +243,17 @@ input:focus {
   line-height: 1.55;
 }
 
+/* 게임 화면 */
+.game-layout {
+  width: 100%;
+  max-width: 860px;
+}
+
 .game-header {
   width: 100%;
   display: flex;
-  gap: 12px;
-  align-items: stretch;
+  gap: 16px;
+  align-items: center;
   justify-content: space-between;
   margin-bottom: 14px;
   color: white;
@@ -260,25 +269,25 @@ input:focus {
 
 .game-header h2 {
   margin: 3px 0 0;
-  font-size: 1.45rem;
+  font-size: clamp(1.5rem, 4vw, 2.2rem);
   line-height: 1.25;
   letter-spacing: -0.04em;
 }
 
 .timer-box {
-  min-width: 96px;
+  min-width: 120px;
   border-radius: 22px;
   background: rgba(255,255,255,.12);
   border: 1px solid rgba(255,255,255,.22);
   color: white;
   text-align: center;
-  padding: 10px 8px;
+  padding: 12px 10px;
 }
 
 .timer-box span {
   display: block;
   font-weight: 900;
-  font-size: 1.3rem;
+  font-size: 1.45rem;
   color: var(--primary);
 }
 
@@ -291,11 +300,11 @@ input:focus {
 
 .progress-wrap {
   width: 100%;
-  height: 12px;
+  height: 13px;
   background: rgba(255,255,255,.18);
   border-radius: 999px;
   overflow: hidden;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
 
 .progress-bar {
@@ -306,7 +315,7 @@ input:focus {
 }
 
 .mission-card {
-  padding: 22px 18px;
+  padding: 30px 30px;
 }
 
 .mission-tag {
@@ -314,24 +323,25 @@ input:focus {
   border-radius: 999px;
   background: #e9f9ef;
   color: #087443;
-  padding: 7px 12px;
-  font-size: 0.82rem;
+  padding: 8px 14px;
+  font-size: 0.9rem;
   font-weight: 900;
-  margin-bottom: 14px;
+  margin-bottom: 16px;
 }
 
 .mission-story {
-  margin: 0 0 18px;
+  margin: 0 0 22px;
   white-space: pre-line;
-  line-height: 1.82;
+  line-height: 2;
   color: #243042;
   font-weight: 650;
-  font-size: 1.02rem;
+  font-size: 1.08rem;
+  word-break: keep-all;
 }
 
 .hint-box {
-  margin: 12px 0 18px;
-  padding: 14px;
+  margin: 14px 0 20px;
+  padding: 16px;
   border-radius: 18px;
   background: #fff6d7;
   border: 2px dashed #f5c12d;
@@ -367,11 +377,11 @@ input:focus {
 }
 
 .status-card {
-  margin-top: 13px;
-  padding: 15px;
+  margin-top: 14px;
+  padding: 16px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 9px;
+  gap: 10px;
   border-radius: 24px;
 }
 
@@ -381,7 +391,7 @@ input:focus {
 
 .status-card span {
   display: block;
-  font-size: .75rem;
+  font-size: .78rem;
   color: var(--muted);
   font-weight: 700;
 }
@@ -389,13 +399,15 @@ input:focus {
 .status-card strong {
   display: block;
   margin-top: 3px;
-  font-size: .93rem;
+  font-size: .98rem;
   font-weight: 900;
 }
 
+/* 엔딩 / 랭킹 */
 .ending-card,
 .ranking-card {
-  padding: 28px 20px 22px;
+  max-width: 560px;
+  padding: 30px 22px 24px;
   text-align: center;
 }
 
@@ -515,20 +527,73 @@ input:focus {
     opacity: 0;
     transform: translateY(18px) scale(.98);
   }
+
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
   }
 }
 
-@media (max-width: 370px) {
+/* 스마트폰 최적화 */
+@media (max-width: 640px) {
   .app-shell {
-    padding-left: 12px;
-    padding-right: 12px;
+    width: 100%;
+    padding: 18px 14px 34px;
+  }
+
+  .screen.active {
+    align-items: flex-start;
+    padding-top: 8px;
   }
 
   .hero-card {
-    padding: 24px 16px 20px;
+    padding: 26px 18px 22px;
+  }
+
+  h1 {
+    font-size: 2.45rem;
+  }
+
+  .game-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .timer-box {
+    width: 100%;
+    min-width: auto;
+  }
+
+  .mission-card {
+    padding: 24px 18px;
+  }
+
+  .mission-story {
+    font-size: 1rem;
+    line-height: 1.85;
+  }
+
+  .status-card {
+    grid-template-columns: repeat(3, 1fr);
+    padding: 13px 8px;
+  }
+
+  .status-card strong {
+    font-size: .88rem;
+  }
+
+  .info-grid {
+    gap: 8px;
+  }
+}
+
+@media (max-width: 370px) {
+  .hero-card {
+    padding: 24px 14px 20px;
+  }
+
+  h1 {
+    font-size: 2.1rem;
   }
 
   .info-grid {
@@ -539,11 +604,7 @@ input:focus {
     font-size: 1rem;
   }
 
-  .game-header h2 {
-    font-size: 1.18rem;
-  }
-
-  .timer-box {
-    min-width: 86px;
+  .mission-card {
+    padding: 22px 15px;
   }
 }
