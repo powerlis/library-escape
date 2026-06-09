@@ -913,3 +913,39 @@ body.dark-mode .blob-blue {
   }
 }
 
+.ending-highlight {
+  color: #3157ff;
+  font-weight: 900;
+  line-height: 1.9;
+}
+.ending-fail {
+  color: #ff6b6b;
+  font-weight: 900;
+  line-height: 1.9;
+}
+
+body.dark-mode .ending-card {
+  background: rgba(12, 18, 35, 0.92);
+  border-color: rgba(255,255,255,0.08);
+  color: #eef3ff;
+}
+
+body.dark-mode .ending-card h2 {
+  color: #ff8b8b;
+}
+
+body.dark-mode #endingText {
+  color: #eef3ff;
+}
+
+body.dark-mode .result-box div {
+  background: rgba(255,255,255,0.06);
+}
+
+body.dark-mode .result-box span {
+  color: rgba(255,255,255,0.62);
+}
+
+body.dark-mode .result-box strong {
+  color: #ffe082;
+}

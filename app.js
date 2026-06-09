@@ -34,15 +34,13 @@ try {
 const TOTAL_TIME = 20 * 60;
 const STORAGE_KEY = "libraryEscapeState_v3";
 
-const introText = `[도서관 보안 시스템 경고]
-
-도서관 폐쇄까지 남은 시간:
+const introText = `도서관 폐쇄까지 남은 시간:
 20분
 
 오늘 새벽,
 도서관의 마지막 기록이 사라졌습니다.
 
-그리고 사서가 남긴 의문의 메시지가 발견되었습니다.
+그리고 사서선생님이 남긴 의문의 메시지가 발견되었습니다.
 
 “책을 읽지 않는 순간,
 기억도 사라진다.”
@@ -68,9 +66,11 @@ const missions = [
 그곳에 숨겨진 QR 또는 메모를 찾아 암호를 입력하세요.
 
 암호 문장:
-책은 ___이다.`,
-    answer: ["마음"],
-    hint: "『어린 왕자』 또는 마음과 관련된 유명한 문장을 떠올려 보세요."
+__의 완성은 삶이기에.
+그리하여 우리 모두는 저마다 한 권의 책을 써나가는 사람이다.
+삶이라는 단 한 권의 책을!`,
+    answer: ["독서"],
+    hint: "『걷는 독서』의 서문에 있는 문장입니다. 도서관 서가에서 책을 찾아 서문을 읽어보세요"
   },
   {
     title: "사라진 페이지",
@@ -137,7 +137,7 @@ const missions = [
     story:
 `지금까지 복구한 단어를 떠올려 보세요.
 
-마음 · 눈물 · 별 · 완득이 · 아몬드
+독서 · 눈물 · 별 · 완득이 · 아몬드
 
 사서선생님이 마지막으로 남긴 문장입니다.
 
@@ -222,6 +222,21 @@ function showScreen(name) {
   }
 }
 
+function setEndingTitle(mode) {
+  const eyebrow = document.querySelector("#endingScreen .eyebrow");
+  const title = document.querySelector("#endingScreen h2");
+
+  if (!eyebrow || !title) return;
+
+  if (mode === "fail") {
+    eyebrow.textContent = "Failed to restore record";
+    title.textContent = "기록 복구 실패";
+  } else {
+    eyebrow.textContent = "RECORD RESTORED";
+    title.textContent = "기록 복구 완료";
+  }
+}
+
 function saveState() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
@@ -256,6 +271,7 @@ function resetState() {
   stopTimer();
   clearTypingTimers();
   clearIntroTimers();
+  setEndingTitle("success");
 }
 
 function toast(message) {
@@ -491,6 +507,7 @@ function startGame() {
   saveState();
 
   document.body.classList.remove("dark-mode");
+  setEndingTitle("success");
 
   showScreen("intro");
   typeIntroStory(introText);
@@ -558,6 +575,7 @@ async function completeGame() {
   clearIntroTimers();
 
   document.body.classList.remove("dark-mode");
+  setEndingTitle("success");
 
   state.completed = true;
   state.endTime = Date.now();
@@ -570,8 +588,13 @@ async function completeGame() {
   els.resultTime.textContent = formatTime(usedTime);
   els.resultHints.textContent = `${state.hintUsed}회`;
 
-  els.endingText.textContent =
-    "도서관 시스템이 정상화되었습니다. 책은 읽는 순간 끝나는 것이 아니라, 사람 안에 기억으로 남습니다.";
+  els.endingText.innerHTML = `
+    도서관 시스템이 정상화되었습니다.<br><br>
+    <span class="ending-highlight">
+      책은 읽는 순간 끝나는 것이 아니라,<br>
+      사람 안에 기억으로 남습니다!
+    </span>
+  `;
 
   showScreen("ending");
 
@@ -587,17 +610,24 @@ function failGame() {
   clearTypingTimers();
   clearIntroTimers();
 
-  document.body.classList.remove("dark-mode");
+  // 실패 시에는 dark-mode를 제거하지 않습니다.
+  document.body.classList.add("dark-mode");
+  setEndingTitle("fail");
 
   state.completed = true;
   saveState();
 
   els.resultTeam.textContent = state.teamName;
-  els.resultTime.textContent = "실패";
+  els.resultTime.textContent = "FAILED";
   els.resultHints.textContent = `${state.hintUsed}회`;
 
-  els.endingText.textContent =
-    "제한시간이 종료되었습니다. 도서관 기록 복구에 실패했습니다. 다시 도전해 보세요.";
+  els.endingText.innerHTML = `
+    제한시간이 종료되었습니다.<br><br>
+    <span class="ending-fail">
+      도서관 기록 복구에 실패했습니다.<br>
+      마지막 기록이 완전히 사라졌습니다.
+    </span>
+  `;
 
   showScreen("ending");
 }
@@ -622,6 +652,7 @@ async function saveRanking(result) {
 
 async function loadRanking() {
   document.body.classList.remove("dark-mode");
+  setEndingTitle("success");
 
   showScreen("ranking");
 
@@ -712,6 +743,7 @@ els.backBtn.addEventListener("click", () => {
     startTimer();
   } else {
     document.body.classList.remove("dark-mode");
+    setEndingTitle("success");
     showScreen("start");
   }
 });
