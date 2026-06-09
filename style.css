@@ -23,7 +23,7 @@ body {
   margin: 0;
   min-height: 100%;
   font-family: "Gowun Dodum", "Noto Sans KR", sans-serif;
-  font-size: 18px;
+  font-size: 16px;
   line-height: 1.75;
   color: var(--text);
   background:
@@ -83,24 +83,27 @@ label {
   opacity: 0.45;
 }
 
+/* 핵심: PC에서도 스마트폰 폭으로 고정 */
 .app-shell {
-  width: min(100%, 940px);
+  width: 100%;
+  max-width: 430px;
   min-height: 100vh;
   margin: 0 auto;
-  padding: 28px 18px 42px;
+  padding: 18px 14px 34px;
   position: relative;
   z-index: 1;
 }
 
 .screen {
   display: none;
-  min-height: calc(100vh - 70px);
+  min-height: calc(100vh - 52px);
 }
 
 .screen.active {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
+  padding-top: 8px;
 }
 
 .hero-card,
@@ -117,8 +120,8 @@ label {
 }
 
 .hero-card {
-  max-width: 540px;
-  padding: 34px 24px 26px;
+  max-width: 100%;
+  padding: 28px 18px 22px;
   text-align: center;
   animation: popIn .45s ease both;
 }
@@ -147,7 +150,7 @@ label {
 h1 {
   margin: 0;
   font-family: "Noto Sans KR", sans-serif;
-  font-size: clamp(2.4rem, 8vw, 4.2rem);
+  font-size: 2.35rem;
   line-height: 1.05;
   font-weight: 900;
   letter-spacing: -0.05em;
@@ -170,7 +173,7 @@ h1 span {
 .info-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 9px;
+  gap: 8px;
   margin: 20px 0;
 }
 
@@ -262,15 +265,15 @@ input:focus {
 
 .game-layout {
   width: 100%;
-  max-width: 880px;
+  max-width: 100%;
 }
 
 .game-header {
   width: 100%;
   display: flex;
-  gap: 16px;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
   margin-bottom: 14px;
   color: #1f2937;
 }
@@ -287,7 +290,7 @@ input:focus {
 .game-header h2 {
   margin: 3px 0 0;
   font-family: "Noto Sans KR", sans-serif;
-  font-size: clamp(1.8rem, 4vw, 2.4rem);
+  font-size: 1.8rem;
   line-height: 1.25;
   letter-spacing: -0.04em;
   font-weight: 900;
@@ -295,7 +298,8 @@ input:focus {
 }
 
 .timer-box {
-  min-width: 128px;
+  width: 100%;
+  min-width: auto;
   border-radius: 24px;
   background: #ffffff;
   border: 2px solid #ffe58a;
@@ -338,7 +342,7 @@ input:focus {
 }
 
 .mission-card {
-  padding: 30px;
+  padding: 24px 18px;
 }
 
 .mission-tag {
@@ -355,10 +359,10 @@ input:focus {
 
 .mission-story {
   margin: 0 0 22px;
-  min-height: 260px;
+  min-height: 250px;
   font-family: "Gowun Dodum", "Noto Sans KR", sans-serif;
-  font-size: 1.15rem;
-  line-height: 2.05;
+  font-size: 1.02rem;
+  line-height: 1.9;
   color: #243042;
   font-weight: 700;
   word-break: keep-all;
@@ -425,7 +429,7 @@ input:focus {
 
 .status-card {
   margin-top: 14px;
-  padding: 16px;
+  padding: 13px 8px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
@@ -447,13 +451,13 @@ input:focus {
   display: block;
   margin-top: 3px;
   font-family: "Noto Sans KR", sans-serif;
-  font-size: .98rem;
+  font-size: .88rem;
   font-weight: 900;
 }
 
 .ending-card,
 .ranking-card {
-  max-width: 570px;
+  max-width: 100%;
   padding: 32px 24px 26px;
   text-align: center;
 }
@@ -462,7 +466,7 @@ input:focus {
 .ranking-card h2 {
   margin: 0;
   font-family: "Noto Sans KR", sans-serif;
-  font-size: clamp(1.8rem, 4vw, 2.4rem);
+  font-size: 1.8rem;
   letter-spacing: -0.05em;
   font-weight: 900;
   color: var(--blue);
@@ -557,8 +561,7 @@ input:focus {
   left: 50%;
   bottom: 28px;
   transform: translateX(-50%) translateY(20px);
-  width: calc(100% - 36px);
-  max-width: 460px;
+  width: min(calc(100% - 36px), 390px);
   padding: 14px 16px;
   border-radius: 18px;
   background: rgba(20, 28, 48, .94);
@@ -610,64 +613,6 @@ input:focus {
 
   51%, 100% {
     opacity: 0;
-  }
-}
-
-@media (max-width: 640px) {
-  html,
-  body {
-    font-size: 16px;
-  }
-
-  .app-shell {
-    width: 100%;
-    padding: 18px 14px 34px;
-  }
-
-  .screen.active {
-    align-items: flex-start;
-    padding-top: 8px;
-  }
-
-  .hero-card {
-    padding: 28px 18px 22px;
-  }
-
-  h1 {
-    font-size: 2.35rem;
-  }
-
-  .game-header {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .timer-box {
-    width: 100%;
-    min-width: auto;
-  }
-
-  .mission-card {
-    padding: 24px 18px;
-  }
-
-  .mission-story {
-    min-height: 250px;
-    font-size: 1.02rem;
-    line-height: 1.9;
-  }
-
-  .status-card {
-    grid-template-columns: repeat(3, 1fr);
-    padding: 13px 8px;
-  }
-
-  .status-card strong {
-    font-size: .88rem;
-  }
-
-  .info-grid {
-    gap: 8px;
   }
 }
 
