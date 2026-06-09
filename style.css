@@ -734,3 +734,182 @@ input:focus {
     padding: 22px 15px;
   }
 }
+.title-top {
+  font-size: 0.75em;
+  display: inline-block;
+  letter-spacing: -0.06em;
+}
+
+
+/* =========================
+   INTRO SCREEN
+========================= */
+
+.intro-overlay {
+  width: 100%;
+  min-height: calc(100vh - 40px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.intro-terminal {
+  width: 100%;
+  background: rgba(5, 10, 20, 0.94);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 28px;
+  padding: 28px 22px 32px;
+  color: #d7e1ff;
+  box-shadow:
+    0 20px 60px rgba(0,0,0,0.45),
+    inset 0 0 0 1px rgba(255,255,255,0.03);
+  backdrop-filter: blur(12px);
+}
+
+.intro-warning {
+  color: #ff7676;
+  font-family: "Noto Sans KR", sans-serif;
+  font-weight: 900;
+  font-size: 1rem;
+  margin-bottom: 24px;
+  letter-spacing: -0.02em;
+}
+
+.intro-typing {
+  min-height: 420px;
+  white-space: pre-line;
+  line-height: 2;
+  font-size: 1.02rem;
+  color: #eef3ff;
+  font-family: "Gowun Dodum", sans-serif;
+  word-break: keep-all;
+}
+
+.intro-line {
+  display: block;
+  opacity: 0;
+  transform: translateY(10px);
+  animation: introFade .35s ease forwards;
+}
+
+.intro-cursor::after {
+  content: "▌";
+  margin-left: 2px;
+  animation: blink 0.8s infinite;
+  color: #ffe082;
+}
+
+.intro-btn {
+  margin-top: 20px;
+}
+
+/* =========================
+   DARK ESCAPE MODE
+========================= */
+
+body.dark-mode {
+  background:
+    radial-gradient(circle at 10% 5%, rgba(255, 196, 0, 0.08), transparent 20%),
+    radial-gradient(circle at 90% 88%, rgba(90, 120, 255, 0.10), transparent 26%),
+    linear-gradient(180deg, #05070d 0%, #0a1020 45%, #131b2f 100%);
+  color: #eef3ff;
+  transition:
+    background 0.8s ease,
+    color 0.5s ease;
+}
+
+body.dark-mode .mission-card,
+body.dark-mode .status-card,
+body.dark-mode .timer-box {
+  background: rgba(12, 18, 35, 0.9);
+  border-color: rgba(255,255,255,0.08);
+  color: #eef3ff;
+  box-shadow: 0 20px 55px rgba(0, 0, 0, 0.28);
+}
+
+body.dark-mode .mission-story {
+  color: #edf2ff;
+}
+
+body.dark-mode .mission-tag {
+  background: rgba(255, 224, 130, 0.14);
+  color: #ffe082;
+}
+
+body.dark-mode .hint-box {
+  background: rgba(255, 224, 130, 0.11);
+  border-color: rgba(255, 224, 130, 0.45);
+}
+
+body.dark-mode .hint-box strong,
+body.dark-mode .hint-box p {
+  color: #ffe9a6;
+}
+
+body.dark-mode label {
+  color: rgba(255,255,255,0.84);
+}
+
+body.dark-mode input {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.12);
+  color: white;
+}
+
+body.dark-mode input::placeholder {
+  color: rgba(255,255,255,0.45);
+}
+
+body.dark-mode .progress-wrap {
+  background: rgba(255,255,255,0.08);
+}
+
+body.dark-mode .status-card span {
+  color: rgba(255,255,255,0.6);
+}
+
+body.dark-mode .status-card strong {
+  color: white;
+}
+
+body.dark-mode .game-header h2 {
+  color: #ffe082;
+}
+
+body.dark-mode .mini-label {
+  color: #ff9ac7;
+}
+
+body.dark-mode .timer-box span {
+  color: #ffe082;
+}
+
+body.dark-mode .timer-box small {
+  color: rgba(255,255,255,0.72);
+}
+
+body.dark-mode .feedback.ok {
+  color: #7df0a3;
+}
+
+body.dark-mode .feedback.no {
+  color: #ff8b8b;
+}
+
+body.dark-mode .bg-pattern {
+  opacity: 0.04;
+}
+
+body.dark-mode .blob-yellow,
+body.dark-mode .blob-pink,
+body.dark-mode .blob-blue {
+  opacity: 0.12;
+}
+
+@keyframes introFade {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+

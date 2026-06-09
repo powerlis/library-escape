@@ -34,12 +34,31 @@ try {
 const TOTAL_TIME = 20 * 60;
 const STORAGE_KEY = "libraryEscapeState_v3";
 
+const introText = `[도서관 보안 시스템 경고]
+
+도서관 폐쇄까지 남은 시간:
+20분
+
+오늘 새벽,
+도서관의 마지막 기록이 사라졌습니다.
+
+그리고 사서가 남긴 의문의 메시지가 발견되었습니다.
+
+“책을 읽지 않는 순간,
+기억도 사라진다.”
+
+도서관 곳곳에 숨겨진 단서를 찾아
+마지막 기록을 복구하세요.
+
+실패할 경우,
+도서관은 영구 폐쇄됩니다.`;
+
 const missions = [
   {
     title: "사라진 숫자",
     tag: "도서관 입구 · BEST 대출도서",
     story:
-`[도서관 보안 시스템 경고]
+`[첫 번째 단서]
 
 오늘 새벽, 사서선생님이 남긴 첫 번째 메모가 발견되었습니다.
 
@@ -135,6 +154,7 @@ const $ = (id) => document.getElementById(id);
 
 const screens = {
   start: $("startScreen"),
+  intro: $("introScreen"),
   game: $("gameScreen"),
   ending: $("endingScreen"),
   ranking: $("rankingScreen")
@@ -144,6 +164,8 @@ const els = {
   teamName: $("teamName"),
   startBtn: $("startBtn"),
   rankingBtn: $("rankingBtn"),
+  introTyping: $("introTyping"),
+  enterBtn: $("enterBtn"),
   missionTitle: $("missionTitle"),
   timer: $("timer"),
   progressBar: $("progressBar"),
@@ -180,6 +202,7 @@ let state = {
 
 let timerId = null;
 let typingTimerIds = [];
+let introTimerIds = [];
 
 function normalize(value) {
   return String(value)
@@ -190,8 +213,13 @@ function normalize(value) {
 }
 
 function showScreen(name) {
-  Object.values(screens).forEach(screen => screen.classList.remove("active"));
-  screens[name].classList.add("active");
+  Object.values(screens).forEach(screen => {
+    if (screen) screen.classList.remove("active");
+  });
+
+  if (screens[name]) {
+    screens[name].classList.add("active");
+  }
 }
 
 function saveState() {
@@ -214,6 +242,7 @@ function loadState() {
 
 function resetState() {
   localStorage.removeItem(STORAGE_KEY);
+
   state = {
     teamName: "",
     currentMission: 0,
@@ -222,8 +251,11 @@ function resetState() {
     endTime: null,
     completed: false
   };
+
+  document.body.classList.remove("dark-mode");
   stopTimer();
   clearTypingTimers();
+  clearIntroTimers();
 }
 
 function toast(message) {
@@ -275,6 +307,11 @@ function stopTimer() {
 function clearTypingTimers() {
   typingTimerIds.forEach(id => clearTimeout(id));
   typingTimerIds = [];
+}
+
+function clearIntroTimers() {
+  introTimerIds.forEach(id => clearTimeout(id));
+  introTimerIds = [];
 }
 
 function typeMissionStory(text) {
@@ -343,6 +380,70 @@ function typeMissionStory(text) {
   typeNextCharacter();
 }
 
+function typeIntroStory(text) {
+  clearIntroTimers();
+
+  els.introTyping.innerHTML = "";
+  els.enterBtn.classList.add("hidden");
+
+  const lines = text.split("\n");
+
+  let lineIndex = 0;
+  let charIndex = 0;
+  let currentLineElement = null;
+
+  function typeNextCharacter() {
+    if (lineIndex >= lines.length) {
+      const cursor = els.introTyping.querySelector(".intro-cursor");
+      if (cursor) cursor.classList.remove("intro-cursor");
+
+      els.enterBtn.classList.remove("hidden");
+      return;
+    }
+
+    if (charIndex === 0) {
+      const oldCursor = els.introTyping.querySelector(".intro-cursor");
+      if (oldCursor) oldCursor.classList.remove("intro-cursor");
+
+      currentLineElement = document.createElement("span");
+      currentLineElement.className = "intro-line intro-cursor";
+      els.introTyping.appendChild(currentLineElement);
+    }
+
+    const currentLineText = lines[lineIndex];
+
+    if (currentLineText.length === 0) {
+      currentLineElement.innerHTML = "&nbsp;";
+      currentLineElement.classList.remove("intro-cursor");
+
+      lineIndex++;
+      charIndex = 0;
+
+      const timer = setTimeout(typeNextCharacter, 260);
+      introTimerIds.push(timer);
+      return;
+    }
+
+    currentLineElement.textContent += currentLineText[charIndex];
+    charIndex++;
+
+    if (charIndex >= currentLineText.length) {
+      currentLineElement.classList.remove("intro-cursor");
+
+      lineIndex++;
+      charIndex = 0;
+
+      const timer = setTimeout(typeNextCharacter, 430);
+      introTimerIds.push(timer);
+    } else {
+      const timer = setTimeout(typeNextCharacter, 38);
+      introTimerIds.push(timer);
+    }
+  }
+
+  typeNextCharacter();
+}
+
 function renderMission() {
   const mission = missions[state.currentMission];
 
@@ -382,12 +483,28 @@ function startGame() {
     teamName: name,
     currentMission: 0,
     hintUsed: 0,
-    startTime: Date.now(),
+    startTime: null,
     endTime: null,
     completed: false
   };
 
   saveState();
+
+  document.body.classList.remove("dark-mode");
+
+  showScreen("intro");
+  typeIntroStory(introText);
+}
+
+function enterEscapeRoom() {
+  clearIntroTimers();
+
+  document.body.classList.add("dark-mode");
+
+  state.startTime = Date.now();
+
+  saveState();
+
   showScreen("game");
   renderMission();
   startTimer();
@@ -438,6 +555,9 @@ function showHint() {
 async function completeGame() {
   stopTimer();
   clearTypingTimers();
+  clearIntroTimers();
+
+  document.body.classList.remove("dark-mode");
 
   state.completed = true;
   state.endTime = Date.now();
@@ -465,6 +585,9 @@ async function completeGame() {
 function failGame() {
   stopTimer();
   clearTypingTimers();
+  clearIntroTimers();
+
+  document.body.classList.remove("dark-mode");
 
   state.completed = true;
   saveState();
@@ -498,6 +621,8 @@ async function saveRanking(result) {
 }
 
 async function loadRanking() {
+  document.body.classList.remove("dark-mode");
+
   showScreen("ranking");
 
   els.rankingList.innerHTML = `<p class="empty-text">랭킹을 불러오는 중...</p>`;
@@ -571,6 +696,7 @@ els.submitBtn.addEventListener("click", checkAnswer);
 els.hintBtn.addEventListener("click", showHint);
 els.rankingBtn.addEventListener("click", loadRanking);
 els.showRankingBtn.addEventListener("click", loadRanking);
+els.enterBtn.addEventListener("click", enterEscapeRoom);
 
 els.restartBtn.addEventListener("click", () => {
   resetState();
@@ -579,11 +705,13 @@ els.restartBtn.addEventListener("click", () => {
 });
 
 els.backBtn.addEventListener("click", () => {
-  if (state.teamName && !state.completed) {
+  if (state.teamName && !state.completed && state.startTime) {
+    document.body.classList.add("dark-mode");
     showScreen("game");
     renderMission();
     startTimer();
   } else {
+    document.body.classList.remove("dark-mode");
     showScreen("start");
   }
 });
@@ -597,6 +725,16 @@ els.answerInput.addEventListener("keydown", (event) => {
 window.addEventListener("load", () => {
   if (loadState()) {
     els.teamName.value = state.teamName;
+
+    if (!state.startTime) {
+      document.body.classList.remove("dark-mode");
+      showScreen("intro");
+      typeIntroStory(introText);
+      toast("오프닝 화면부터 이어서 시작합니다.");
+      return;
+    }
+
+    document.body.classList.add("dark-mode");
     showScreen("game");
     renderMission();
     startTimer();
