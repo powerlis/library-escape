@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>도서관 방탈출 | 사라진 사서의 마지막 기록</title>
+
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Google Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+  <!-- Firebase SDK -->
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+  <div class="bg-orb orb-one"></div>
+  <div class="bg-orb orb-two"></div>
+  <div class="bg-noise"></div>
+
+  <main class="app-shell">
+    <section id="startScreen" class="screen active">
+      <div class="hero-card">
+        <div class="school-badge">전통문화고 도서관</div>
+        <p class="eyebrow">ONLINE LIBRARY ESCAPE</p>
+        <h1>사라진 사서의<br><span>마지막 기록</span></h1>
+        <p class="subtitle">
+          제한시간 안에 도서관 곳곳의 단서를 찾아<br>
+          사라진 기록을 복구하세요.
+        </p>
+
+        <div class="info-grid">
+          <div>
+            <strong>20분</strong>
+            <span>제한시간</span>
+          </div>
+          <div>
+            <strong>6단계</strong>
+            <span>미션</span>
+          </div>
+          <div>
+            <strong>2~4인</strong>
+            <span>팀 권장</span>
+          </div>
+        </div>
+
+        <div class="input-box">
+          <label for="teamName">팀 이름</label>
+          <input id="teamName" type="text" maxlength="20" placeholder="예: 책벌레 탈출단" />
+        </div>
+
+        <button id="startBtn" class="primary-btn">게임 시작</button>
+        <button id="rankingBtn" class="ghost-btn">실시간 랭킹 보기</button>
+
+        <p class="notice">
+          ※ 스마트폰으로 QR코드를 스캔해 진행합니다.<br>
+          ※ 새로고침해도 같은 기기에서는 진행 상황이 유지됩니다.
+        </p>
+      </div>
+    </section>
+
+    <section id="gameScreen" class="screen">
+      <header class="game-header">
+        <div>
+          <p class="mini-label">MISSION</p>
+          <h2 id="missionTitle">미션 제목</h2>
+        </div>
+        <div class="timer-box">
+          <span id="timer">20:00</span>
+          <small>남은 시간</small>
+        </div>
+      </header>
+
+      <div class="progress-wrap">
+        <div id="progressBar" class="progress-bar"></div>
+      </div>
+
+      <article class="mission-card">
+        <div id="missionTag" class="mission-tag">도서관 입구</div>
+        <p id="missionStory" class="mission-story"></p>
+
+        <div id="missionHintBox" class="hint-box hidden">
+          <strong>힌트</strong>
+          <p id="missionHint"></p>
+        </div>
+
+        <div class="answer-area">
+          <label for="answerInput">암호 입력</label>
+          <input id="answerInput" type="text" autocomplete="off" placeholder="정답을 입력하세요" />
+          <button id="submitBtn" class="primary-btn">정답 확인</button>
+          <button id="hintBtn" class="ghost-btn">힌트 보기</button>
+        </div>
+
+        <p id="feedback" class="feedback"></p>
+      </article>
+
+      <section class="status-card">
+        <div>
+          <span>현재 팀</span>
+          <strong id="currentTeam">-</strong>
+        </div>
+        <div>
+          <span>힌트 사용</span>
+          <strong id="hintCount">0회</strong>
+        </div>
+        <div>
+          <span>진행률</span>
+          <strong id="missionCount">1/6</strong>
+        </div>
+      </section>
+    </section>
+
+    <section id="endingScreen" class="screen">
+      <div class="ending-card">
+        <p class="eyebrow">RECORD RESTORED</p>
+        <h2>기록 복구 완료</h2>
+        <p id="endingText">
+          도서관 시스템이 정상화되었습니다.
+        </p>
+        <div class="result-box">
+          <div>
+            <span>팀 이름</span>
+            <strong id="resultTeam">-</strong>
+          </div>
+          <div>
+            <span>소요 시간</span>
+            <strong id="resultTime">-</strong>
+          </div>
+          <div>
+            <span>힌트 사용</span>
+            <strong id="resultHints">-</strong>
+          </div>
+        </div>
+
+        <button id="showRankingBtn" class="primary-btn">랭킹 확인</button>
+        <button id="restartBtn" class="ghost-btn">처음부터 다시</button>
+      </div>
+    </section>
+
+    <section id="rankingScreen" class="screen">
+      <div class="ranking-card">
+        <p class="eyebrow">ESCAPE RANKING</p>
+        <h2>실시간 랭킹</h2>
+        <p class="ranking-desc">소요 시간이 짧고, 힌트 사용이 적을수록 상위에 표시됩니다.</p>
+
+        <div id="rankingList" class="ranking-list">
+          <p class="empty-text">랭킹을 불러오는 중...</p>
+        </div>
+
+        <button id="backBtn" class="primary-btn">돌아가기</button>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast"></div>
+</body>
+</html>
