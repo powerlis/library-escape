@@ -637,3 +637,24 @@ input:focus {
     padding: 22px 15px;
   }
 }
+.title-badge {
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  background: #e8f7ef;
+  color: var(--green);
+}
+
+.badge-img {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+.badge-text {
+  font-family: "Noto Sans KR", sans-serif;
+  font-weight: 900;
+  font-size: 0.86rem;
+}
