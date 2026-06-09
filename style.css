@@ -346,13 +346,18 @@ input:focus {
   font-weight: 700;
   font-size: 1.08rem;
   word-break: keep-all;
+  overflow: hidden;
 }
 
 .typing-line {
   display: block;
   opacity: 0;
-  transform: translateY(16px);
-  animation: riseText 0.36s ease forwards;
+  transform: translateY(18px);
+  animation: lineAppear 0.25s ease forwards;
+}
+
+.typing-line.line-done {
+  animation: lineMoveUp 0.35s ease forwards;
 }
 
 .typing-cursor::after {
@@ -558,10 +563,17 @@ input:focus {
   }
 }
 
-@keyframes riseText {
+@keyframes lineAppear {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes lineMoveUp {
+  to {
+    opacity: 1;
+    transform: translateY(-6px);
   }
 }
 

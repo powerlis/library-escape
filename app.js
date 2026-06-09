@@ -296,7 +296,11 @@ function typeMissionStory(text) {
 
     if (charIndex === 0) {
       const oldCursor = els.missionStory.querySelector(".typing-cursor");
-      if (oldCursor) oldCursor.classList.remove("typing-cursor");
+
+      if (oldCursor) {
+        oldCursor.classList.remove("typing-cursor");
+        oldCursor.classList.add("line-done");
+      }
 
       currentLineElement = document.createElement("span");
       currentLineElement.className = "typing-line typing-cursor";
@@ -307,11 +311,13 @@ function typeMissionStory(text) {
 
     if (currentLineText.length === 0) {
       currentLineElement.innerHTML = "&nbsp;";
+      currentLineElement.classList.remove("typing-cursor");
+      currentLineElement.classList.add("line-done");
 
       lineIndex++;
       charIndex = 0;
 
-      const timer = setTimeout(typeNextCharacter, 220);
+      const timer = setTimeout(typeNextCharacter, 260);
       typingTimerIds.push(timer);
       return;
     }
@@ -320,10 +326,13 @@ function typeMissionStory(text) {
     charIndex++;
 
     if (charIndex >= currentLineText.length) {
+      currentLineElement.classList.remove("typing-cursor");
+      currentLineElement.classList.add("line-done");
+
       lineIndex++;
       charIndex = 0;
 
-      const timer = setTimeout(typeNextCharacter, 360);
+      const timer = setTimeout(typeNextCharacter, 430);
       typingTimerIds.push(timer);
     } else {
       const timer = setTimeout(typeNextCharacter, 45);
