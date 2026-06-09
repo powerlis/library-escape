@@ -22,7 +22,9 @@ html,
 body {
   margin: 0;
   min-height: 100%;
-  font-family: "Noto Sans KR", "Gowun Dodum", sans-serif;
+  font-family: "Gowun Dodum", "Noto Sans KR", sans-serif;
+  font-size: 18px;
+  line-height: 1.75;
   color: var(--text);
   background:
     radial-gradient(circle at 10% 5%, rgba(255, 207, 74, 0.55), transparent 24%),
@@ -32,8 +34,9 @@ body {
 }
 
 button,
-input {
-  font-family: inherit;
+input,
+label {
+  font-family: "Noto Sans KR", "Gowun Dodum", sans-serif;
 }
 
 .bg-pattern {
@@ -127,12 +130,14 @@ input {
   border-radius: 999px;
   background: #e8f7ef;
   color: var(--green);
+  font-family: "Noto Sans KR", sans-serif;
   font-weight: 900;
   font-size: 0.86rem;
 }
 
 .eyebrow {
   margin: 0 0 8px;
+  font-family: "Noto Sans KR", sans-serif;
   font-size: 0.78rem;
   font-weight: 900;
   letter-spacing: 0.14em;
@@ -141,10 +146,11 @@ input {
 
 h1 {
   margin: 0;
-  font-size: clamp(2.35rem, 9vw, 4rem);
+  font-family: "Noto Sans KR", sans-serif;
+  font-size: clamp(2.4rem, 8vw, 4.2rem);
   line-height: 1.05;
   font-weight: 900;
-  letter-spacing: -0.06em;
+  letter-spacing: -0.05em;
 }
 
 h1 span {
@@ -154,7 +160,9 @@ h1 span {
 
 .subtitle {
   margin: 18px 0 20px;
-  line-height: 1.75;
+  font-family: "Gowun Dodum", "Noto Sans KR", sans-serif;
+  font-size: 1.05rem;
+  line-height: 1.8;
   color: #334155;
   font-weight: 700;
 }
@@ -175,11 +183,13 @@ h1 span {
 
 .info-grid strong {
   display: block;
+  font-family: "Noto Sans KR", sans-serif;
   font-size: 1.18rem;
   font-weight: 900;
 }
 
 .info-grid span {
+  font-family: "Noto Sans KR", sans-serif;
   font-size: 0.78rem;
   color: #6b5a00;
   font-weight: 800;
@@ -268,6 +278,7 @@ input:focus {
 .mini-label {
   margin: 0;
   color: var(--pink);
+  font-family: "Noto Sans KR", sans-serif;
   font-size: 0.74rem;
   font-weight: 900;
   letter-spacing: 0.14em;
@@ -275,9 +286,11 @@ input:focus {
 
 .game-header h2 {
   margin: 3px 0 0;
-  font-size: clamp(1.6rem, 4vw, 2.25rem);
+  font-family: "Noto Sans KR", sans-serif;
+  font-size: clamp(1.8rem, 4vw, 2.4rem);
   line-height: 1.25;
   letter-spacing: -0.04em;
+  font-weight: 900;
   color: var(--blue);
 }
 
@@ -294,6 +307,7 @@ input:focus {
 
 .timer-box span {
   display: block;
+  font-family: "Noto Sans KR", sans-serif;
   font-weight: 900;
   font-size: 1.45rem;
   color: #f5a800;
@@ -333,6 +347,7 @@ input:focus {
   background: #e8f7ef;
   color: var(--green);
   padding: 8px 14px;
+  font-family: "Noto Sans KR", sans-serif;
   font-size: 0.9rem;
   font-weight: 900;
   margin-bottom: 16px;
@@ -341,10 +356,11 @@ input:focus {
 .mission-story {
   margin: 0 0 22px;
   min-height: 260px;
-  line-height: 2;
+  font-family: "Gowun Dodum", "Noto Sans KR", sans-serif;
+  font-size: 1.15rem;
+  line-height: 2.05;
   color: #243042;
   font-weight: 700;
-  font-size: 1.08rem;
   word-break: keep-all;
   overflow: hidden;
 }
@@ -377,6 +393,7 @@ input:focus {
 
 .hint-box strong {
   color: #8a6200;
+  font-family: "Noto Sans KR", sans-serif;
 }
 
 .hint-box p {
@@ -394,6 +411,7 @@ input:focus {
   min-height: 26px;
   margin: 14px 0 0;
   text-align: center;
+  font-family: "Noto Sans KR", sans-serif;
   font-weight: 900;
 }
 
@@ -428,6 +446,7 @@ input:focus {
 .status-card strong {
   display: block;
   margin-top: 3px;
+  font-family: "Noto Sans KR", sans-serif;
   font-size: .98rem;
   font-weight: 900;
 }
@@ -442,8 +461,10 @@ input:focus {
 .ending-card h2,
 .ranking-card h2 {
   margin: 0;
-  font-size: 2rem;
+  font-family: "Noto Sans KR", sans-serif;
+  font-size: clamp(1.8rem, 4vw, 2.4rem);
   letter-spacing: -0.05em;
+  font-weight: 900;
   color: var(--blue);
 }
 
@@ -475,6 +496,7 @@ input:focus {
 }
 
 .result-box strong {
+  font-family: "Noto Sans KR", sans-serif;
   font-weight: 900;
   color: var(--blue);
 }
@@ -504,10 +526,12 @@ input:focus {
   place-items: center;
   background: var(--yellow);
   color: #2b1d00;
+  font-family: "Noto Sans KR", sans-serif;
   font-weight: 900;
 }
 
 .rank-team {
+  font-family: "Noto Sans KR", sans-serif;
   font-weight: 900;
 }
 
@@ -518,6 +542,7 @@ input:focus {
 }
 
 .rank-time {
+  font-family: "Noto Sans KR", sans-serif;
   font-weight: 900;
   color: var(--blue);
 }
@@ -538,6 +563,7 @@ input:focus {
   border-radius: 18px;
   background: rgba(20, 28, 48, .94);
   color: white;
+  font-family: "Noto Sans KR", sans-serif;
   font-weight: 900;
   text-align: center;
   opacity: 0;
@@ -588,6 +614,11 @@ input:focus {
 }
 
 @media (max-width: 640px) {
+  html,
+  body {
+    font-size: 16px;
+  }
+
   .app-shell {
     width: 100%;
     padding: 18px 14px 34px;
@@ -603,7 +634,7 @@ input:focus {
   }
 
   h1 {
-    font-size: 2.45rem;
+    font-size: 2.35rem;
   }
 
   .game-header {
@@ -622,8 +653,8 @@ input:focus {
 
   .mission-story {
     min-height: 250px;
-    font-size: 1rem;
-    line-height: 1.85;
+    font-size: 1.02rem;
+    line-height: 1.9;
   }
 
   .status-card {
