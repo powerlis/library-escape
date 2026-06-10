@@ -474,7 +474,6 @@ if (mission.customMission) {
 
   els.answerInput1.value = "";
   els.answerInput2.value = "";
-}
 
   } else {
 
@@ -508,6 +507,7 @@ els.hintBtn.addEventListener("click", () => {
 // 정답 확인
 // =========================
 els.submitBtn.addEventListener("click", checkAnswer);
+$("customSubmitBtn").addEventListener("click", checkAnswer);
 
 $("customHintBtn1").addEventListener("click", () => {
   $("hintText1").classList.toggle("show");
