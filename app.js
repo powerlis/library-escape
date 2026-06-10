@@ -477,13 +477,15 @@ if (mission.customMission) {
 
   } else {
 
-    els.customMissionBox.classList.add("hidden");
+  els.customMissionBox.classList.add("hidden");
 
-    document.querySelector(".answer-area")
-      .classList.remove("hidden");
+  $("missionHintBox").classList.add("hidden");
 
-    els.answerInput.value = "";
-  }
+  document.querySelector(".answer-area")
+    .classList.remove("hidden");
+
+  els.answerInput.value = "";
+}
 }
 
 
@@ -494,7 +496,16 @@ els.hintBtn.addEventListener("click", () => {
 
   const mission = missions[state.currentMission];
 
-  toast(mission.hint);
+  const hintBox =
+    $("missionHintBox");
+
+  const hintText =
+    $("missionHint");
+
+  hintText.textContent =
+    mission.hint;
+
+  hintBox.classList.remove("hidden");
 
   state.hintUsed++;
 
