@@ -107,18 +107,17 @@ const missions = [
 
   {
     title: "사라진 숫자",
-    tag: "BEST 대출도서",
+    tag: "신간도서",
     story:
-`가장 많이 읽힌 책 근처에서
-첫 번째 단서를 찾아야 합니다.
+`도서실 신간도서 코너를 둘러봅니다.
+첫 번째 단서를 찾기 위해서는
 
-『걷는 독서』 서문 속 문장을 확인하세요.
+『걷는 독서』 책을 찾아야 합니다!
 
 암호 문장:
 
 __의 완성은 삶이기에.
-그리하여 우리 모두는 저마다 한 권의 책을 써나가는 사람이다.
-삶이라는 단 한 권의 책을!`,
+그리하여 우리 모두는 저마다 한 권의 책을 써나가는 사람이다. 삶이라는 단 한 권의 책을!`,
 
     answer: ["독서"],
 
@@ -128,7 +127,7 @@ __의 완성은 삶이기에.
 
   {
     title: "사라진 페이지",
-    tag: "소설 코너 · 813.7",
+    tag: "소설 코너",
 
     story:
 `813.7 구역으로 이동하세요.
@@ -460,18 +459,22 @@ function renderMission() {
   els.progressBar.style.width =
     `${((state.currentMission + 1) / missions.length) * 100}%`;
 
-  if (mission.customMission) {
+if (mission.customMission) {
 
-    els.customMissionBox.classList.remove("hidden");
+  els.customMissionBox.classList.remove("hidden");
 
-    document.querySelector(".answer-area")
-      .classList.add("hidden");
+  document.querySelector(".answer-area")
+    .classList.add("hidden");
 
-    els.hintText1.textContent = mission.hint1;
-    els.hintText2.textContent = mission.hint2;
+  els.hintText1.textContent = mission.hint1;
+  els.hintText2.textContent = mission.hint2;
 
-    els.answerInput1.value = "";
-    els.answerInput2.value = "";
+  $("hintText1").classList.remove("show");
+  $("hintText2").classList.remove("show");
+
+  els.answerInput1.value = "";
+  els.answerInput2.value = "";
+}
 
   } else {
 
@@ -506,7 +509,13 @@ els.hintBtn.addEventListener("click", () => {
 // =========================
 els.submitBtn.addEventListener("click", checkAnswer);
 
-$("customSubmitBtn").addEventListener("click", checkAnswer);
+$("customHintBtn1").addEventListener("click", () => {
+  $("hintText1").classList.toggle("show");
+});
+
+$("customHintBtn2").addEventListener("click", () => {
+  $("hintText2").classList.toggle("show");
+});
 
 function normalize(str) {
   return str.trim().replace(/\s+/g, "");
