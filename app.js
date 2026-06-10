@@ -349,23 +349,6 @@ function startGame() {
 }
 
 
-// =========================
-// 게임 시작
-// =========================
-function startGame() {
-
-  state.currentMission = 0;
-  state.hintUsed = 0;
-
-  state.startedAt = Date.now();
-
-  els.currentTeam.textContent = state.teamName;
-
-  startTimer();
-
-  renderMission();
-}
-
 
 // =========================
 // 미션 타이핑 효과
@@ -648,7 +631,6 @@ async function completeGame() {
   document.body.classList.remove("dark-mode");
 
   const used =
-    Math.floor((Date.now() - state.startedAt) / 1000);
     Math.floor((Date.now() - state.startedAt) / 1000);
 
   const min =
