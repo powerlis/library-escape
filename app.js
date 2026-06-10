@@ -106,7 +106,7 @@ const state = {
 const missions = [
 
   {
-    title: "사라진 숫자",
+    title: "사라진 기록",
     tag: "신간도서",
     story:
 `도서실 신간도서 코너를 둘러봅니다.
