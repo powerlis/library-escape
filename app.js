@@ -719,6 +719,8 @@ els.showRankingBtn.addEventListener("click", openRanking);
 
 async function openRanking() {
 
+  document.body.classList.remove("dark-mode");
+
   showScreen("rankingScreen");
 
   els.rankingList.innerHTML =
@@ -735,14 +737,12 @@ async function openRanking() {
     const snapshot = await getDocs(q);
 
     if (snapshot.empty) {
-
       els.rankingList.innerHTML =
         `<p class="empty-text">랭킹이 없습니다.</p>`;
-
       return;
     }
 
-    let html = "";
+    els.rankingList.innerHTML = "";
 
     let rank = 1;
 
@@ -750,33 +750,33 @@ async function openRanking() {
 
       const data = doc.data();
 
-      const min =
-        String(Math.floor(data.usedTime / 60))
-          .padStart(2, "0");
+      const displayName =
+        data.name || data.teamName || "이름 없음";
 
-      const sec =
-        String(data.usedTime % 60)
-          .padStart(2, "0");
+      const usedTime =
+        data.usedTime || 0;
 
-      html += `
-<div class="ranking-item">
+      const hintCount =
+        data.hints ?? data.hintUsed ?? 0;
 
-<div class="ranking-rank">
-${rank}
-</div>
+      const item = document.createElement("div");
+      item.className = "rank-item";
 
-<div class="ranking-info">
-<strong>${data.name}</strong>
-<span>${min}:${sec}</span>
-</div>
+      item.innerHTML = `
+        <div class="rank-num">${rank}</div>
 
-</div>
-`;
+        <div>
+          <div class="rank-team">${escapeHtml(displayName)}</div>
+          <div class="rank-meta">힌트 ${hintCount}회 사용</div>
+        </div>
+
+        <div class="rank-time">${formatRankingTime(usedTime)}</div>
+      `;
+
+      els.rankingList.appendChild(item);
 
       rank++;
     });
-
-    els.rankingList.innerHTML = html;
 
   } catch (e) {
 
@@ -785,6 +785,22 @@ ${rank}
     els.rankingList.innerHTML =
       `<p class="empty-text">랭킹을 불러오지 못했습니다.</p>`;
   }
+}
+
+function formatRankingTime(seconds) {
+  const safe = Math.max(0, seconds || 0);
+  const min = String(Math.floor(safe / 60)).padStart(2, "0");
+  const sec = String(safe % 60).padStart(2, "0");
+  return `${min}:${sec}`;
+}
+
+function escapeHtml(text) {
+  return String(text)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
 }
 
 
