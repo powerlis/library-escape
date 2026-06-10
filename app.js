@@ -1,673 +1,630 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+// =========================
+// Firebase
+// =========================
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
 import {
   getFirestore,
   collection,
   addDoc,
-  serverTimestamp,
+  getDocs,
   query,
   orderBy,
-  limit,
-  getDocs
-} from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+  limit
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBQa3LJ7a7QPbDLR8NkFyBe-CM9Sg4C8RY",
-  authDomain: "library-escape.firebaseapp.com",
-  projectId: "library-escape",
-  storageBucket: "library-escape.firebasestorage.app",
-  messagingSenderId: "765610754235",
-  appId: "1:765610754235:web:4a9e941fa8313f20a8699e",
-  measurementId: "G-Z442XEZ08X"
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "XXXX",
+  appId: "XXXX"
 };
 
-let db = null;
-let firebaseReady = false;
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-try {
-  const app = initializeApp(firebaseConfig);
-  db = getFirestore(app);
-  firebaseReady = !firebaseConfig.apiKey.includes("여기에");
-} catch (error) {
-  console.warn("Firebase 초기화 실패:", error);
-}
 
-const TOTAL_TIME = 20 * 60;
-const STORAGE_KEY = "libraryEscapeState_v3";
-
-const introText = `도서관 폐쇄까지 남은 시간:
-20분
-
-오늘 새벽,
-도서관의 마지막 기록이 사라졌습니다.
-
-그리고 사서선생님이 남긴 의문의 메시지가 발견되었습니다.
-
-“책을 읽지 않는 순간,
-기억도 사라진다.”
-
-도서관 곳곳에 숨겨진 단서를 찾아
-마지막 기록을 복구하세요.
-
-실패할 경우,
-도서관은 영구 폐쇄됩니다.`;
-
-const missions = [
-  {
-    title: "사라진 숫자",
-    tag: "도서관 신간도서",
-    story:
-`[첫 번째 단서]
-
-오늘 새벽, 사서선생님이 남긴 첫 번째 메모가 발견되었습니다.
-
-“첫 번째 단서는 최근에 새로 들어온 책 근처에 있다.”
-
-도서관 신간도서 코너로 이동하세요.
-그곳에 숨겨진 QR 또는 메모를 찾아 암호를 입력하세요.
-
-암호 문장:
-__의 완성은 삶이기에.
-그리하여 우리 모두는 저마다 한 권의 책을 써나가는 사람이다. 삶이라는 단 한 권의 책을!`,
-    answer: ["독서"],
-    hint: "『걷는 독서』의 서문에 있는 문장입니다. 도서관 서가에서 책을 찾아 서문을 읽어보세요"
-  },
-      {
-  title: "사라진 페이지",
-  tag: "소설 코너 · 813.7",
-  story:
-`사서선생님은 마지막으로 “가장 외로운 존재”를 찾고 있었습니다.
-
-813.7 구역으로 이동하세요.
-『아몬드』 책 근처에 숨겨진 단서를 확인하세요.
-
-메모에 적힌 페이지를 펼쳐 마지막 단어를 입력하세요.
-`,
-  answer: ["사랑"],
-  hint: "책 사이에 끼워 둔 작은 메모를 먼저 찾아야 합니다."
-},
-{
-  title: "금지된 문장",
-  tag: "시집 코너",
-  story:
-`세 번째 기록은 811.6 시집 코너에 숨겨져 있습니다.
-
-사서선생님의 메모:
-“밤하늘을 세어 본 사람만 다음 문을 열 수 있다.”
-
-윤동주 시집 또는 ‘별 헤는 밤’ 자료를 찾아보세요.
-
-문제:
-‘별 헤는 밤’에서 가장 많이 반복되는 핵심 단어는 무엇일까요?`,
-  answer: ["별"],
-  hint: "윤동주의 '하늘과 바람과 별과 시' 시집을 찾으세요. 시 전체의 중심 이미지입니다."
-},
-{
-  title: "왜곡된 기록 1",
-  tag: "책 제목 복구",
-  story:
-`도서관 시스템 오류로 책 제목 일부가 사라졌습니다.
-
-다음 책 제목에서 사라진 두 글자를 입력하세요.
-
-전지적 ○○시점
-
-정답은 두 글자입니다.`,
-  answer: ["독자"],
-  hint: "싱숑의 작품으로 웹툰과 영화로도 제작되었습니다."
-},
-{
-  title: "왜곡된 기록 2",
-  tag: "책 제목 복구",
-  story:
-`두 번째 책 제목도 손상되었습니다.
-
-다음 책 제목에서 사라진 한 글자를 입력하세요.
-
-달러구트 ○ 백화점
-
-정답은 한 글자입니다.`,
-  answer: ["꿈"],
-  hint: "여기는 잠들어야만 입장할 수 있는 백화점입니다."
-},
-  {
-    title: "마지막 기록",
-    tag: "FINAL MISSION",
-    story:
-`지금까지 복구한 단어를 떠올려 보세요.
-
-독서 · 사랑 · 별 · 독자 · 꿈
-
-사서선생님이 마지막으로 남긴 문장입니다.
-
-“책은 읽는 순간 끝나는 것이 아니라,
-사람 안에 ______으로 남는다.”
-
-빈칸에 들어갈 마지막 암호를 입력하세요.`,
-    answer: ["기억"],
-    hint: "처음 오프닝에서 사라졌던 바로 그것입니다."
-  }
-];
-
+// =========================
+// 공통
+// =========================
 const $ = (id) => document.getElementById(id);
 
-const screens = {
-  start: $("startScreen"),
-  intro: $("introScreen"),
-  game: $("gameScreen"),
-  ending: $("endingScreen"),
-  ranking: $("rankingScreen")
-};
-
 const els = {
-  teamName: $("teamName"),
+
+  startScreen: $("startScreen"),
+  introScreen: $("introScreen"),
+  gameScreen: $("gameScreen"),
+  endingScreen: $("endingScreen"),
+  rankingScreen: $("rankingScreen"),
+
   startBtn: $("startBtn"),
   rankingBtn: $("rankingBtn"),
-  introTyping: $("introTyping"),
   enterBtn: $("enterBtn"),
+
   missionTitle: $("missionTitle"),
-  timer: $("timer"),
-  progressBar: $("progressBar"),
   missionTag: $("missionTag"),
   missionStory: $("missionStory"),
-  missionHintBox: $("missionHintBox"),
-  missionHint: $("missionHint"),
+
   answerInput: $("answerInput"),
+
+  answerInput1: $("answerInput1"),
+  answerInput2: $("answerInput2"),
+
+  customMissionBox: $("customMissionBox"),
+
+  hintText1: $("hintText1"),
+  hintText2: $("hintText2"),
+
   submitBtn: $("submitBtn"),
   hintBtn: $("hintBtn"),
+
   feedback: $("feedback"),
+
+  progressBar: $("progressBar"),
+
+  timer: $("timer"),
+
   currentTeam: $("currentTeam"),
   hintCount: $("hintCount"),
   missionCount: $("missionCount"),
+
   endingText: $("endingText"),
   resultTeam: $("resultTeam"),
   resultTime: $("resultTime"),
   resultHints: $("resultHints"),
+
+  rankingList: $("rankingList"),
+
   showRankingBtn: $("showRankingBtn"),
   restartBtn: $("restartBtn"),
-  rankingList: $("rankingList"),
   backBtn: $("backBtn"),
-  toast: $("toast")
+
+  teamName: $("teamName"),
+
+  introTyping: $("introTyping")
 };
 
-let state = {
-  teamName: "",
+
+// =========================
+// 상태
+// =========================
+const state = {
   currentMission: 0,
   hintUsed: 0,
-  startTime: null,
-  endTime: null,
-  completed: false
+  startedAt: null,
+  timerInterval: null,
+  teamName: ""
 };
 
-let timerId = null;
-let typingTimerIds = [];
-let introTimerIds = [];
 
-function normalize(value) {
-  return String(value)
-    .trim()
-    .replace(/\s+/g, "")
-    .replace(/[.,!?]/g, "")
-    .toLowerCase();
-}
+// =========================
+// 미션
+// =========================
+const missions = [
 
-function showScreen(name) {
-  Object.values(screens).forEach(screen => {
-    if (screen) screen.classList.remove("active");
-  });
+  {
+    title: "사라진 숫자",
+    tag: "BEST 대출도서",
+    story:
+`가장 많이 읽힌 책 근처에서
+첫 번째 단서를 찾아야 합니다.
 
-  if (screens[name]) {
-    screens[name].classList.add("active");
+『걷는 독서』 서문 속 문장을 확인하세요.
+
+암호 문장:
+
+__의 완성은 삶이기에.
+그리하여 우리 모두는 저마다 한 권의 책을 써나가는 사람이다.
+삶이라는 단 한 권의 책을!`,
+
+    answer: ["독서"],
+
+    hint:
+"『걷는 독서』의 서문에 있는 문장입니다. 도서관 서가에서 책을 찾아 서문을 읽어보세요"
+  },
+
+  {
+    title: "사라진 페이지",
+    tag: "소설 코너 · 813.7",
+
+    story:
+`813.7 구역으로 이동하세요.
+
+『아몬드』 책 근처에 숨겨진 단서를 확인하세요.`,
+
+    answer: ["사랑"],
+
+    hint:
+"책 사이에 끼워 둔 작은 메모를 먼저 찾아야 합니다."
+  },
+
+  {
+    title: "금지된 문장",
+    tag: "시집 코너",
+
+    story:
+`윤동주 시집 또는
+‘별 헤는 밤’을 찾아보세요.
+
+가장 많이 반복되는 핵심 단어는?`,
+
+    answer: ["별"],
+
+    hint:
+"윤동주의 시에서 가장 중요한 이미지입니다."
+  },
+
+  {
+    title: "왜곡된 기록 1",
+    tag: "책 제목 복구",
+
+    story:
+`전지적 ○○시점
+
+사라진 두 글자를 입력하세요.`,
+
+    answer: ["독자"],
+
+    hint:
+"웹툰과 영화로도 제작되었습니다."
+  },
+
+  {
+    title: "왜곡된 기록 2",
+    tag: "책 제목 복구",
+
+    story:
+`달러구트 ○ 백화점
+
+사라진 한 글자를 입력하세요.`,
+
+    answer: ["꿈"],
+
+    hint:
+"잠들면 꿈을 사고파는 신비한 백화점 이야기입니다."
+  },
+
+  {
+    title: "사서의 기억",
+    tag: "도서관 탐색 미션",
+
+    customMission: true,
+
+    story:
+`도서관 시스템 복구를 위해서는
+사서선생님의 마지막 기록을 확인해야 합니다.`,
+
+    answer1: ["최성환"],
+    answer2: ["김보영"],
+
+    hint1:
+`도서실 사서선생님 자리 명패를 확인하세요!
+아니면 가까이 있는 도서부원에게 물어보세요~`,
+
+    hint2:
+`가까이 있는 도서부원에게 물어보세요~`
+  },
+
+  {
+    title: "마지막 기록",
+    tag: "최종 복구",
+
+    story:
+`모든 기록이 연결되었습니다.
+
+마지막 암호를 입력하세요.
+
+책은 읽는 순간 끝나는 것이 아니라,
+사람 안에 기억으로 남습니다!`,
+
+    answer: ["기억"],
+
+    hint:
+"마지막 문장의 핵심 단어입니다."
   }
-}
 
-function setEndingTitle(mode) {
-  const eyebrow = document.querySelector("#endingScreen .eyebrow");
-  const title = document.querySelector("#endingScreen h2");
+];
 
-  if (!eyebrow || !title) return;
 
-  if (mode === "fail") {
-    eyebrow.textContent = "Failed to restore record";
-    title.textContent = "기록 복구 실패";
-  } else {
-    eyebrow.textContent = "RECORD RESTORED";
-    title.textContent = "기록 복구 완료";
+// =========================
+// 시작
+// =========================
+els.startBtn.addEventListener("click", () => {
+
+  const name = els.teamName.value.trim();
+
+  if (!name) {
+    toast("이름을 입력해 주세요.");
+    return;
   }
-}
 
-function saveState() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-}
+  state.teamName = name;
 
-function loadState() {
-  const raw = localStorage.getItem(STORAGE_KEY);
-  if (!raw) return false;
+  showScreen("introScreen");
 
-  try {
-    const saved = JSON.parse(raw);
-    if (!saved || !saved.teamName || saved.completed) return false;
-    state = saved;
-    return true;
-  } catch {
-    return false;
-  }
-}
+  startIntroTyping();
+});
 
-function resetState() {
-  localStorage.removeItem(STORAGE_KEY);
 
-  state = {
-    teamName: "",
-    currentMission: 0,
-    hintUsed: 0,
-    startTime: null,
-    endTime: null,
-    completed: false
-  };
+// =========================
+// 오프닝
+// =========================
+function startIntroTyping() {
 
-  document.body.classList.remove("dark-mode");
-  stopTimer();
-  clearTypingTimers();
-  clearIntroTimers();
-  setEndingTitle("success");
-}
+  const lines = [
 
-function toast(message) {
-  els.toast.textContent = message;
-  els.toast.classList.add("show");
-  setTimeout(() => els.toast.classList.remove("show"), 2200);
-}
+`도서관 폐쇄까지 남은 시간:
+20분`,
 
-function formatTime(seconds) {
-  const safe = Math.max(0, seconds);
-  const m = String(Math.floor(safe / 60)).padStart(2, "0");
-  const s = String(safe % 60).padStart(2, "0");
-  return `${m}:${s}`;
-}
+`오늘 새벽,
+도서관의 마지막 기록이 사라졌습니다.`,
 
-function elapsedSeconds() {
-  if (!state.startTime) return 0;
-  return Math.floor((Date.now() - state.startTime) / 1000);
-}
+`그리고 사서가 남긴
+의문의 메시지가 발견되었습니다.`,
 
-function remainingSeconds() {
-  return TOTAL_TIME - elapsedSeconds();
-}
+`“책을 읽지 않는 순간,
+기억도 사라진다.”`,
 
-function startTimer() {
-  stopTimer();
+`도서관 곳곳에 숨겨진 단서를 찾아
+마지막 기록을 복구하세요.`,
 
-  timerId = setInterval(() => {
-    const remain = remainingSeconds();
-    els.timer.textContent = formatTime(remain);
-
-    if (remain <= 60) {
-      els.timer.style.color = "#ff5d5d";
-    } else {
-      els.timer.style.color = "";
-    }
-
-    if (remain <= 0) {
-      failGame();
-    }
-  }, 300);
-}
-
-function stopTimer() {
-  if (timerId) clearInterval(timerId);
-  timerId = null;
-}
-
-function clearTypingTimers() {
-  typingTimerIds.forEach(id => clearTimeout(id));
-  typingTimerIds = [];
-}
-
-function clearIntroTimers() {
-  introTimerIds.forEach(id => clearTimeout(id));
-  introTimerIds = [];
-}
-
-function typeMissionStory(text) {
-  clearTypingTimers();
-  els.missionStory.innerHTML = "";
-
-  const lines = text.split("\n");
+`실패할 경우,
+도서관은 영구 폐쇄됩니다.`
+  ];
 
   let lineIndex = 0;
-  let charIndex = 0;
-  let currentLineElement = null;
-
-  function typeNextCharacter() {
-    if (lineIndex >= lines.length) {
-      const cursor = els.missionStory.querySelector(".typing-cursor");
-      if (cursor) cursor.classList.remove("typing-cursor");
-      return;
-    }
-
-    if (charIndex === 0) {
-      const oldCursor = els.missionStory.querySelector(".typing-cursor");
-
-      if (oldCursor) {
-        oldCursor.classList.remove("typing-cursor");
-        oldCursor.classList.add("line-done");
-      }
-
-      currentLineElement = document.createElement("span");
-      currentLineElement.className = "typing-line typing-cursor";
-      els.missionStory.appendChild(currentLineElement);
-    }
-
-    const currentLineText = lines[lineIndex];
-
-    if (currentLineText.length === 0) {
-      currentLineElement.innerHTML = "&nbsp;";
-      currentLineElement.classList.remove("typing-cursor");
-      currentLineElement.classList.add("line-done");
-
-      lineIndex++;
-      charIndex = 0;
-
-      const timer = setTimeout(typeNextCharacter, 260);
-      typingTimerIds.push(timer);
-      return;
-    }
-
-    currentLineElement.textContent += currentLineText[charIndex];
-    charIndex++;
-
-    if (charIndex >= currentLineText.length) {
-      currentLineElement.classList.remove("typing-cursor");
-      currentLineElement.classList.add("line-done");
-
-      lineIndex++;
-      charIndex = 0;
-
-      const timer = setTimeout(typeNextCharacter, 430);
-      typingTimerIds.push(timer);
-    } else {
-      const timer = setTimeout(typeNextCharacter, 45);
-      typingTimerIds.push(timer);
-    }
-  }
-
-  typeNextCharacter();
-}
-
-function typeIntroStory(text) {
-  clearIntroTimers();
 
   els.introTyping.innerHTML = "";
-  els.enterBtn.classList.add("hidden");
 
-  const lines = text.split("\n");
+  function typeLine() {
 
-  let lineIndex = 0;
-  let charIndex = 0;
-  let currentLineElement = null;
-
-  function typeNextCharacter() {
     if (lineIndex >= lines.length) {
-      const cursor = els.introTyping.querySelector(".intro-cursor");
-      if (cursor) cursor.classList.remove("intro-cursor");
 
       els.enterBtn.classList.remove("hidden");
       return;
     }
 
-    if (charIndex === 0) {
-      const oldCursor = els.introTyping.querySelector(".intro-cursor");
-      if (oldCursor) oldCursor.classList.remove("intro-cursor");
+    const lineDiv = document.createElement("div");
+    lineDiv.className = "typing-line";
 
-      currentLineElement = document.createElement("span");
-      currentLineElement.className = "intro-line intro-cursor";
-      els.introTyping.appendChild(currentLineElement);
-    }
+    els.introTyping.appendChild(lineDiv);
 
-    const currentLineText = lines[lineIndex];
+    const text = lines[lineIndex];
 
-    if (currentLineText.length === 0) {
-      currentLineElement.innerHTML = "&nbsp;";
-      currentLineElement.classList.remove("intro-cursor");
+    let charIndex = 0;
 
-      lineIndex++;
-      charIndex = 0;
+    const typing = setInterval(() => {
 
-      const timer = setTimeout(typeNextCharacter, 260);
-      introTimerIds.push(timer);
-      return;
-    }
+      lineDiv.textContent += text[charIndex];
 
-    currentLineElement.textContent += currentLineText[charIndex];
-    charIndex++;
+      charIndex++;
 
-    if (charIndex >= currentLineText.length) {
-      currentLineElement.classList.remove("intro-cursor");
+      if (charIndex >= text.length) {
 
-      lineIndex++;
-      charIndex = 0;
+        clearInterval(typing);
 
-      const timer = setTimeout(typeNextCharacter, 430);
-      introTimerIds.push(timer);
-    } else {
-      const timer = setTimeout(typeNextCharacter, 38);
-      introTimerIds.push(timer);
-    }
+        lineIndex++;
+
+        setTimeout(typeLine, 500);
+      }
+
+    }, 40);
   }
 
-  typeNextCharacter();
+  typeLine();
 }
 
+
+// =========================
+// 입장
+// =========================
+els.enterBtn.addEventListener("click", () => {
+
+  showScreen("gameScreen");
+
+  startGame();
+});
+
+
+// =========================
+// 게임 시작
+// =========================
+function startGame() {
+
+  state.currentMission = 0;
+  state.hintUsed = 0;
+
+  state.startedAt = Date.now();
+
+  els.currentTeam.textContent = state.teamName;
+
+  startTimer();
+
+  renderMission();
+}
+
+
+// =========================
+// 미션 렌더
+// =========================
 function renderMission() {
+
   const mission = missions[state.currentMission];
 
   els.missionTitle.textContent = mission.title;
   els.missionTag.textContent = mission.tag;
-  typeMissionStory(mission.story);
-  els.missionHint.textContent = mission.hint;
-  els.missionHintBox.classList.add("hidden");
-  els.answerInput.value = "";
+  els.missionStory.textContent = mission.story;
+
   els.feedback.textContent = "";
-  els.feedback.className = "feedback";
 
-  els.currentTeam.textContent = state.teamName;
-  els.hintCount.textContent = `${state.hintUsed}회`;
-  els.missionCount.textContent = `${state.currentMission + 1}/${missions.length}`;
+  els.missionCount.textContent =
+    `${state.currentMission + 1}/${missions.length}`;
 
-  const progress = (state.currentMission / missions.length) * 100;
-  els.progressBar.style.width = `${progress}%`;
+  els.progressBar.style.width =
+    `${((state.currentMission + 1) / missions.length) * 100}%`;
 
-  saveState();
+  if (mission.customMission) {
 
-  setTimeout(() => {
-    els.answerInput.focus();
-  }, 100);
-}
+    els.customMissionBox.classList.remove("hidden");
 
-function startGame() {
-  const name = els.teamName.value.trim();
+    document.querySelector(".answer-area")
+      .classList.add("hidden");
 
-  if (!name) {
-    toast("이름을 입력해 주세요.");
-    els.teamName.focus();
-    return;
+    els.hintText1.textContent = mission.hint1;
+    els.hintText2.textContent = mission.hint2;
+
+    els.answerInput1.value = "";
+    els.answerInput2.value = "";
+
+  } else {
+
+    els.customMissionBox.classList.add("hidden");
+
+    document.querySelector(".answer-area")
+      .classList.remove("hidden");
+
+    els.answerInput.value = "";
   }
-
-  state = {
-    teamName: name,
-    currentMission: 0,
-    hintUsed: 0,
-    startTime: null,
-    endTime: null,
-    completed: false
-  };
-
-  saveState();
-
-  document.body.classList.remove("dark-mode");
-  setEndingTitle("success");
-
-  showScreen("intro");
-  typeIntroStory(introText);
 }
 
-function enterEscapeRoom() {
-  clearIntroTimers();
 
-  document.body.classList.add("dark-mode");
+// =========================
+// 힌트
+// =========================
+els.hintBtn.addEventListener("click", () => {
 
-  state.startTime = Date.now();
+  const mission = missions[state.currentMission];
 
-  saveState();
+  toast(mission.hint);
 
-  showScreen("game");
-  renderMission();
-  startTimer();
+  state.hintUsed++;
+
+  els.hintCount.textContent =
+    `${state.hintUsed}회`;
+});
+
+
+// =========================
+// 정답 확인
+// =========================
+els.submitBtn.addEventListener("click", checkAnswer);
+
+function normalize(str) {
+  return str.trim().replace(/\s+/g, "");
 }
 
 function checkAnswer() {
+
   const mission = missions[state.currentMission];
-  const userAnswer = normalize(els.answerInput.value);
 
-  if (!userAnswer) {
-    toast("암호를 입력해 주세요.");
-    return;
+  let isCorrect = false;
+
+  if (mission.customMission) {
+
+    const answer1 =
+      normalize(els.answerInput1.value);
+
+    const answer2 =
+      normalize(els.answerInput2.value);
+
+    const correct1 =
+      mission.answer1.some(
+        ans => normalize(ans) === answer1
+      );
+
+    const correct2 =
+      mission.answer2.some(
+        ans => normalize(ans) === answer2
+      );
+
+    isCorrect = correct1 && correct2;
+
+  } else {
+
+    const userAnswer =
+      normalize(els.answerInput.value);
+
+    if (!userAnswer) {
+
+      toast("정답을 입력해 주세요.");
+      return;
+    }
+
+    isCorrect =
+      mission.answer.some(
+        ans => normalize(ans) === userAnswer
+      );
   }
-
-  const isCorrect = mission.answer.some(ans => normalize(ans) === userAnswer);
 
   if (!isCorrect) {
-    els.feedback.textContent = "암호가 맞지 않습니다. 다시 확인해 보세요.";
-    els.feedback.className = "feedback no";
+
+    els.feedback.textContent =
+      "암호가 맞지 않습니다.";
+
+    els.feedback.className =
+      "feedback no";
+
     return;
   }
 
-  els.feedback.textContent = "정답입니다. 다음 기록이 열립니다.";
-  els.feedback.className = "feedback ok";
+  els.feedback.textContent =
+    "정답입니다.";
+
+  els.feedback.className =
+    "feedback ok";
 
   setTimeout(() => {
-    state.currentMission += 1;
+
+    state.currentMission++;
 
     if (state.currentMission >= missions.length) {
       completeGame();
     } else {
       renderMission();
     }
+
   }, 700);
 }
 
-function showHint() {
-  if (els.missionHintBox.classList.contains("hidden")) {
-    state.hintUsed += 1;
-    els.hintCount.textContent = `${state.hintUsed}회`;
-    els.missionHintBox.classList.remove("hidden");
-    saveState();
-  } else {
-    els.missionHintBox.classList.add("hidden");
-  }
+
+// =========================
+// 타이머
+// =========================
+function startTimer() {
+
+  clearInterval(state.timerInterval);
+
+  state.timerInterval = setInterval(() => {
+
+    const elapsed =
+      Math.floor((Date.now() - state.startedAt) / 1000);
+
+    const remain = 1200 - elapsed;
+
+    if (remain <= 0) {
+
+      clearInterval(state.timerInterval);
+
+      failGame();
+      return;
+    }
+
+    const min =
+      String(Math.floor(remain / 60)).padStart(2, "0");
+
+    const sec =
+      String(remain % 60).padStart(2, "0");
+
+    els.timer.textContent =
+      `${min}:${sec}`;
+
+  }, 1000);
 }
 
+
+// =========================
+// 성공
+// =========================
 async function completeGame() {
-  stopTimer();
-  clearTypingTimers();
-  clearIntroTimers();
 
-  document.body.classList.remove("dark-mode");
-  setEndingTitle("success");
+  clearInterval(state.timerInterval);
 
-  state.completed = true;
-  state.endTime = Date.now();
-  saveState();
+  const used =
+    Math.floor((Date.now() - state.startedAt) / 1000);
 
-  const usedTime = Math.floor((state.endTime - state.startTime) / 1000);
+  const min =
+    String(Math.floor(used / 60)).padStart(2, "0");
 
-  els.progressBar.style.width = "100%";
-  els.resultTeam.textContent = state.teamName;
-  els.resultTime.textContent = formatTime(usedTime);
-  els.resultHints.textContent = `${state.hintUsed}회`;
+  const sec =
+    String(used % 60).padStart(2, "0");
+
+  els.resultTeam.textContent =
+    state.teamName;
+
+  els.resultTime.textContent =
+    `${min}:${sec}`;
+
+  els.resultHints.textContent =
+    `${state.hintUsed}회`;
 
   els.endingText.innerHTML = `
-  도서관 시스템이 정상화되었습니다.<br><br>
+도서관 시스템이 정상화되었습니다.<br><br>
 
-  <span class="ending-highlight">
-    <span class="book-red">책은</span>
-    읽는 순간 끝나는 것이 아니라,<br>
-    사람 안에 기억으로 남습니다!
-  </span>
+<span class="ending-highlight">
+<span class="book-red">책은</span>
+읽는 순간 끝나는 것이 아니라,<br>
+사람 안에 기억으로 남습니다!
+</span>
 `;
 
-  showScreen("ending");
+  try {
 
-  await saveRanking({
-    teamName: state.teamName,
-    usedTime,
-    hintUsed: state.hintUsed
-  });
+    await addDoc(
+      collection(db, "escapeRankings"),
+      {
+        name: state.teamName,
+        usedTime: used,
+        hints: state.hintUsed,
+        createdAt: Date.now()
+      }
+    );
+
+  } catch (e) {
+    console.error(e);
+  }
+
+  showScreen("endingScreen");
 }
 
+
+// =========================
+// 실패
+// =========================
 function failGame() {
-  stopTimer();
-  clearTypingTimers();
-  clearIntroTimers();
 
-  // 실패 시에는 dark-mode를 제거하지 않습니다.
-  document.body.classList.add("dark-mode");
-  setEndingTitle("fail");
+  els.resultTeam.textContent =
+    state.teamName;
 
-  state.completed = true;
-  saveState();
+  els.resultTime.textContent =
+    "시간 초과";
 
-  els.resultTeam.textContent = state.teamName;
-  els.resultTime.textContent = "FAILED";
-  els.resultHints.textContent = `${state.hintUsed}회`;
+  els.resultHints.textContent =
+    `${state.hintUsed}회`;
+
+  document.querySelector(".eyebrow")
+    .textContent =
+    "FAILED TO RESTORE RECORD";
+
+  document.querySelector("#endingScreen h2")
+    .textContent =
+    "기록 복구 실패";
 
   els.endingText.innerHTML = `
-    제한시간이 종료되었습니다.<br><br>
-    <span class="ending-fail">
-      도서관 기록 복구에 실패했습니다.<br>
-      마지막 기록이 완전히 사라졌습니다.
-    </span>
-  `;
+제한시간이 종료되었습니다.<br><br>
+도서관은 영구 폐쇄되었습니다.
+`;
 
-  showScreen("ending");
+  showScreen("endingScreen");
 }
 
-async function saveRanking(result) {
-  if (!firebaseReady || !db) {
-    console.warn("Firebase 설정 전이므로 랭킹 저장 생략");
-    return;
-  }
+
+// =========================
+// 랭킹
+// =========================
+els.rankingBtn.addEventListener("click", openRanking);
+els.showRankingBtn.addEventListener("click", openRanking);
+
+async function openRanking() {
+
+  showScreen("rankingScreen");
+
+  els.rankingList.innerHTML =
+    `<p class="empty-text">불러오는 중...</p>`;
 
   try {
-    await addDoc(collection(db, "escapeRankings"), {
-      teamName: result.teamName,
-      usedTime: result.usedTime,
-      hintUsed: result.hintUsed,
-      createdAt: serverTimestamp()
-    });
-  } catch (error) {
-    console.error("랭킹 저장 실패:", error);
-  }
-}
 
-async function loadRanking() {
-  document.body.classList.remove("dark-mode");
-  setEndingTitle("success");
-
-  showScreen("ranking");
-
-  els.rankingList.innerHTML = `<p class="empty-text">랭킹을 불러오는 중...</p>`;
-
-  if (!firebaseReady || !db) {
-    els.rankingList.innerHTML = `
-      <p class="empty-text">
-        Firebase 설정 전입니다.<br>
-        app.js의 firebaseConfig를 교체하면 실시간 랭킹이 작동합니다.
-      </p>`;
-    return;
-  }
-
-  try {
     const q = query(
       collection(db, "escapeRankings"),
       orderBy("usedTime", "asc"),
@@ -677,99 +634,105 @@ async function loadRanking() {
     const snapshot = await getDocs(q);
 
     if (snapshot.empty) {
-      els.rankingList.innerHTML = `<p class="empty-text">아직 등록된 기록이 없습니다.</p>`;
+
+      els.rankingList.innerHTML =
+        `<p class="empty-text">랭킹이 없습니다.</p>`;
+
       return;
     }
 
-    els.rankingList.innerHTML = "";
+    let html = "";
+
     let rank = 1;
 
     snapshot.forEach(doc => {
+
       const data = doc.data();
 
-      const item = document.createElement("div");
-      item.className = "rank-item";
+      const min =
+        String(Math.floor(data.usedTime / 60))
+          .padStart(2, "0");
 
-      item.innerHTML = `
-        <div class="rank-num">${rank}</div>
-        <div>
-          <div class="rank-team">${escapeHtml(data.teamName || "이름 없음")}</div>
-          <div class="rank-meta">힌트 ${data.hintUsed ?? 0}회 사용</div>
-        </div>
-        <div class="rank-time">${formatTime(data.usedTime || 0)}</div>
-      `;
+      const sec =
+        String(data.usedTime % 60)
+          .padStart(2, "0");
 
-      els.rankingList.appendChild(item);
+      html += `
+<div class="ranking-item">
+
+<div class="ranking-rank">
+${rank}
+</div>
+
+<div class="ranking-info">
+<strong>${data.name}</strong>
+<span>${min}:${sec}</span>
+</div>
+
+</div>
+`;
+
       rank++;
     });
-  } catch (error) {
-    console.error(error);
 
-    els.rankingList.innerHTML = `
-      <p class="empty-text">
-        랭킹을 불러오지 못했습니다.<br>
-        Firestore 보안 규칙을 확인해 주세요.
-      </p>`;
+    els.rankingList.innerHTML = html;
+
+  } catch (e) {
+
+    console.error(e);
+
+    els.rankingList.innerHTML =
+      `<p class="empty-text">랭킹을 불러오지 못했습니다.</p>`;
   }
 }
 
-function escapeHtml(text) {
-  return String(text)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-}
 
-els.startBtn.addEventListener("click", startGame);
-els.submitBtn.addEventListener("click", checkAnswer);
-els.hintBtn.addEventListener("click", showHint);
-els.rankingBtn.addEventListener("click", loadRanking);
-els.showRankingBtn.addEventListener("click", loadRanking);
-els.enterBtn.addEventListener("click", enterEscapeRoom);
-
-els.restartBtn.addEventListener("click", () => {
-  resetState();
-  els.teamName.value = "";
-  showScreen("start");
-});
-
+// =========================
+// 뒤로가기
+// =========================
 els.backBtn.addEventListener("click", () => {
-  if (state.teamName && !state.completed && state.startTime) {
-    document.body.classList.add("dark-mode");
-    showScreen("game");
-    renderMission();
-    startTimer();
-  } else {
-    document.body.classList.remove("dark-mode");
-    setEndingTitle("success");
-    showScreen("start");
-  }
+
+  showScreen("startScreen");
 });
 
-els.answerInput.addEventListener("keydown", (event) => {
-  if (event.key === "Enter") {
-    checkAnswer();
-  }
+
+// =========================
+// 다시 시작
+// =========================
+els.restartBtn.addEventListener("click", () => {
+
+  location.reload();
 });
 
-window.addEventListener("load", () => {
-  if (loadState()) {
-    els.teamName.value = state.teamName;
 
-    if (!state.startTime) {
-      document.body.classList.remove("dark-mode");
-      showScreen("intro");
-      typeIntroStory(introText);
-      toast("오프닝 화면부터 이어서 시작합니다.");
-      return;
-    }
+// =========================
+// 화면 전환
+// =========================
+function showScreen(id) {
 
-    document.body.classList.add("dark-mode");
-    showScreen("game");
-    renderMission();
-    startTimer();
-    toast("이전 진행 상황을 이어서 시작합니다.");
-  }
-});
+  document.querySelectorAll(".screen")
+    .forEach(screen =>
+      screen.classList.remove("active")
+    );
+
+  $(id).classList.add("active");
+}
+
+
+// =========================
+// 토스트
+// =========================
+function toast(msg) {
+
+  const toast = $("toast");
+
+  toast.textContent = msg;
+
+  toast.classList.add("show");
+
+  setTimeout(() => {
+
+    toast.classList.remove("show");
+
+  }, 3000);
+}
