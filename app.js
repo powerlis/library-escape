@@ -756,7 +756,7 @@ async function openRanking() {
     const q = query(
       collection(db, "escapeRankings"),
       orderBy("usedTime", "asc"),
-      limit(50)
+      limit(30)
     );
 
     const snapshot = await getDocs(q);
