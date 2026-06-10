@@ -160,11 +160,42 @@ h1 span {
 }
 
 .calligraphy-title {
-  font-family: "Nanum Pen Script", "Gowun Dodum", cursive;
-  font-size: 1.65em;
-  font-weight: 400;
-  color: #3157ff;
+  display: inline-block;
+  margin-top: 4px;
+  padding: 4px 16px 7px;
+  font-family: "Gowun Batang", serif;
+  font-size: 1.02em;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  color: #2f477e;
   text-shadow: none !important;
+  background:
+    linear-gradient(180deg, rgba(255, 250, 232, 0.95), rgba(255, 238, 191, 0.55));
+  border-radius: 16px 8px 18px 8px;
+  box-shadow:
+    inset 0 -8px 0 rgba(255, 207, 74, 0.24),
+    0 8px 18px rgba(97, 70, 30, 0.08);
+  position: relative;
+}
+
+.calligraphy-title::before {
+  content: "";
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 5px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(89, 63, 26, 0.38), transparent);
+  border-radius: 999px;
+}
+
+.calligraphy-title::after {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  border-radius: 14px 8px 16px 8px;
+  border: 1px solid rgba(138, 98, 0, 0.13);
+  pointer-events: none;
 }
 
 .subtitle {
@@ -702,4 +733,313 @@ input:focus {
   .mission-card {
     padding: 22px 15px;
   }
+}
+.title-top {
+  font-size: 0.75em;
+  display: inline-block;
+  letter-spacing: -0.06em;
+}
+
+
+/* =========================
+   INTRO SCREEN
+========================= */
+
+.intro-overlay {
+  width: 100%;
+  min-height: calc(100vh - 40px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.intro-terminal {
+  width: 100%;
+  background: rgba(5, 10, 20, 0.94);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 28px;
+  padding: 28px 22px 32px;
+  color: #d7e1ff;
+  box-shadow:
+    0 20px 60px rgba(0,0,0,0.45),
+    inset 0 0 0 1px rgba(255,255,255,0.03);
+  backdrop-filter: blur(12px);
+}
+
+.intro-warning {
+  color: #ff7676;
+  font-family: "Noto Sans KR", sans-serif;
+  font-weight: 900;
+  font-size: 1rem;
+  margin-bottom: 24px;
+  letter-spacing: -0.02em;
+}
+
+.intro-typing {
+  min-height: 420px;
+  white-space: pre-line;
+  line-height: 2;
+  font-size: 1.02rem;
+  color: #eef3ff;
+  font-family: "Gowun Dodum", sans-serif;
+  word-break: keep-all;
+}
+
+.intro-line {
+  display: block;
+  opacity: 0;
+  transform: translateY(10px);
+  animation: introFade .35s ease forwards;
+}
+
+.intro-cursor::after {
+  content: "▌";
+  margin-left: 2px;
+  animation: blink 0.8s infinite;
+  color: #ffe082;
+}
+
+.intro-btn {
+  margin-top: 20px;
+}
+
+/* =========================
+   DARK ESCAPE MODE
+========================= */
+
+body.dark-mode {
+  background:
+    radial-gradient(circle at 10% 5%, rgba(255, 196, 0, 0.08), transparent 20%),
+    radial-gradient(circle at 90% 88%, rgba(90, 120, 255, 0.10), transparent 26%),
+    linear-gradient(180deg, #05070d 0%, #0a1020 45%, #131b2f 100%);
+  color: #eef3ff;
+  transition:
+    background 0.8s ease,
+    color 0.5s ease;
+}
+
+body.dark-mode .mission-card,
+body.dark-mode .status-card,
+body.dark-mode .timer-box {
+  background: rgba(12, 18, 35, 0.9);
+  border-color: rgba(255,255,255,0.08);
+  color: #eef3ff;
+  box-shadow: 0 20px 55px rgba(0, 0, 0, 0.28);
+}
+
+body.dark-mode .mission-story {
+  color: #edf2ff;
+}
+
+body.dark-mode .mission-tag {
+  background: rgba(255, 224, 130, 0.14);
+  color: #ffe082;
+}
+
+body.dark-mode .hint-box {
+  background: rgba(255, 224, 130, 0.11);
+  border-color: rgba(255, 224, 130, 0.45);
+}
+
+body.dark-mode .hint-box strong,
+body.dark-mode .hint-box p {
+  color: #ffe9a6;
+}
+
+body.dark-mode label {
+  color: rgba(255,255,255,0.84);
+}
+
+body.dark-mode input {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.12);
+  color: white;
+}
+
+body.dark-mode input::placeholder {
+  color: rgba(255,255,255,0.45);
+}
+
+body.dark-mode .progress-wrap {
+  background: rgba(255,255,255,0.08);
+}
+
+body.dark-mode .status-card span {
+  color: rgba(255,255,255,0.6);
+}
+
+body.dark-mode .status-card strong {
+  color: white;
+}
+
+body.dark-mode .game-header h2 {
+  color: #ffe082;
+}
+
+body.dark-mode .mini-label {
+  color: #ff9ac7;
+}
+
+body.dark-mode .timer-box span {
+  color: #ffe082;
+}
+
+body.dark-mode .timer-box small {
+  color: rgba(255,255,255,0.72);
+}
+
+body.dark-mode .feedback.ok {
+  color: #7df0a3;
+}
+
+body.dark-mode .feedback.no {
+  color: #ff8b8b;
+}
+
+body.dark-mode .bg-pattern {
+  opacity: 0.04;
+}
+
+body.dark-mode .blob-yellow,
+body.dark-mode .blob-pink,
+body.dark-mode .blob-blue {
+  opacity: 0.12;
+}
+
+@keyframes introFade {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ending-highlight {
+  color: #3157ff;
+  font-weight: 900;
+  line-height: 1.9;
+}
+.ending-fail {
+  color: #ff6b6b;
+  font-weight: 900;
+  line-height: 1.9;
+}
+
+body.dark-mode .ending-card {
+  background: rgba(12, 18, 35, 0.92);
+  border-color: rgba(255,255,255,0.08);
+  color: #eef3ff;
+}
+
+body.dark-mode .ending-card h2 {
+  color: #ff8b8b;
+}
+
+body.dark-mode #endingText {
+  color: #eef3ff;
+}
+
+body.dark-mode .result-box div {
+  background: rgba(255,255,255,0.06);
+}
+
+body.dark-mode .result-box span {
+  color: rgba(255,255,255,0.62);
+}
+
+body.dark-mode .result-box strong {
+  color: #ffe082;
+}
+
+.reward-notice {
+  margin-top: 18px;
+  text-align: center;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  color: #3157ff;
+  font-weight: 900;
+  line-height: 1.7;
+  font-size: 0.92rem;
+}
+
+.reward-notice p {
+  margin: 2px 0;
+}
+.book-red {
+  color: #ff4d5a;
+}
+
+/* =========================
+   CUSTOM DUAL MISSION
+========================= */
+
+.custom-mission {
+  margin-top: 28px;
+}
+
+.question-block {
+  margin-bottom: 28px;
+  padding: 18px 16px;
+  border-radius: 22px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  backdrop-filter: blur(8px);
+}
+
+.question-title {
+  font-size: 1rem;
+  font-weight: 900;
+  line-height: 1.7;
+  margin-bottom: 14px;
+  color: #ffe082;
+  word-break: keep-all;
+}
+
+.question-block label {
+  display: block;
+  margin-top: 12px;
+  margin-bottom: 6px;
+  font-weight: 900;
+  color: #8ec5ff;
+}
+
+.question-block input {
+  width: 100%;
+  min-height: 52px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.06);
+  color: white;
+  padding: 0 14px;
+  font-size: 1rem;
+}
+
+.question-block input:focus {
+  border-color: #ffe082;
+  box-shadow: 0 0 0 4px rgba(255,224,130,0.15);
+}
+
+.inline-hint {
+  margin-top: 8px;
+  line-height: 1.8;
+  color: #ffe9a6;
+  font-size: 0.95rem;
+  word-break: keep-all;
+}
+
+.hint-label {
+  color: #8ec5ff !important;
+}
+
+body.dark-mode .question-block {
+  background: rgba(255,255,255,0.04);
+  border-color: rgba(255,255,255,0.08);
+}
+
+body.dark-mode .question-title {
+  color: #ffe082;
+}
+
+body.dark-mode .inline-hint {
+  color: #ffe9a6;
 }
