@@ -9,14 +9,12 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-  <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
 
   <script type="module" src="app.js"></script>
 </head>
 
 <body>
-
   <div class="bg-blob blob-yellow"></div>
   <div class="bg-blob blob-pink"></div>
   <div class="bg-blob blob-blue"></div>
@@ -24,9 +22,7 @@
 
   <main class="app-shell">
 
-    <!-- 시작 화면 -->
     <section id="startScreen" class="screen active">
-
       <div class="hero-card">
 
         <div class="school-badge title-badge">
@@ -50,12 +46,10 @@
             <strong>20분</strong>
             <span>제한시간</span>
           </div>
-
           <div>
             <strong>7단계</strong>
             <span>미션</span>
           </div>
-
           <div>
             <strong>개인별</strong>
             <span>또는 팀별</span>
@@ -64,86 +58,46 @@
 
         <div class="input-box">
           <label for="teamName">이름</label>
-
-          <input
-            id="teamName"
-            type="text"
-            maxlength="20"
-            placeholder="예: 책벌레 탈출단"
-          />
+          <input id="teamName" type="text" maxlength="20" placeholder="예: 책벌레 탈출단" />
         </div>
 
-        <button id="startBtn" class="primary-btn">
-          게임 시작
-        </button>
-
-        <button id="rankingBtn" class="ghost-btn">
-          실시간 랭킹 보기
-        </button>
+        <button id="startBtn" class="primary-btn">게임 시작</button>
+        <button id="rankingBtn" class="ghost-btn">실시간 랭킹 보기</button>
 
         <p class="notice">
           ※ 스마트폰으로 QR코드를 스캔해 진행합니다.<br>
           ※ 새로고침해도 같은 기기에서는 진행 상황이 유지됩니다.
         </p>
-
       </div>
-
     </section>
 
-
-    <!-- 오프닝 -->
     <section id="introScreen" class="screen">
-
       <div class="intro-overlay">
-
         <div class="intro-terminal">
-
-          <div class="intro-warning">
-            [도서관 보안 시스템 경고]
-          </div>
+          <div class="intro-warning">[도서관 보안 시스템 경고]</div>
 
           <div id="introTyping" class="intro-typing"></div>
 
-          <button
-            id="enterBtn"
-            class="primary-btn intro-btn hidden">
-
+          <button id="enterBtn" class="primary-btn intro-btn hidden">
             입장하기
-
           </button>
-
         </div>
-
       </div>
-
     </section>
 
-
-    <!-- 게임 화면 -->
     <section id="gameScreen" class="screen">
-
       <div class="game-layout">
 
         <header class="game-header">
-
           <div>
-
             <p class="mini-label">MISSION</p>
-
-            <h2 id="missionTitle">
-              미션 제목
-            </h2>
-
+            <h2 id="missionTitle">미션 제목</h2>
           </div>
 
           <div class="timer-box">
-
             <span id="timer">20:00</span>
-
             <small>남은 시간</small>
-
           </div>
-
         </header>
 
         <div class="progress-wrap">
@@ -151,25 +105,18 @@
         </div>
 
         <article class="mission-card">
-
-          <div id="missionTag" class="mission-tag">
-            도서관 입구
-          </div>
+          <div id="missionTag" class="mission-tag">도서관 입구</div>
 
           <p id="missionStory" class="mission-story"></p>
 
-
-          <!-- 커스텀 미션 -->
           <div id="customMissionBox" class="custom-mission hidden">
 
             <div class="question-block">
-
               <div class="question-title">
                 [1번 문제] 사서 선생님 성함은?
               </div>
 
-              <label>정답:</label>
-
+              <label for="answerInput1">정답:</label>
               <input
                 id="answerInput1"
                 type="text"
@@ -178,21 +125,16 @@
               />
 
               <label class="hint-label">힌트:</label>
-
               <div id="hintText1" class="inline-hint"></div>
-
             </div>
 
-
             <div class="question-block">
-
               <div class="question-title">
                 [2번 문제] 올해 12월 21일(월)<br>
                 인문학 강좌에 오는 SF 작가는?
               </div>
 
-              <label>정답:</label>
-
+              <label for="answerInput2">정답:</label>
               <input
                 id="answerInput2"
                 type="text"
@@ -201,140 +143,88 @@
               />
 
               <label class="hint-label">힌트:</label>
-
               <div id="hintText2" class="inline-hint"></div>
-
             </div>
 
-          </div>
-
-
-          <!-- 일반 입력 -->
-          <div class="answer-area">
-
-            <label for="answerInput">암호 입력</label>
-
-            <input
-              id="answerInput"
-              type="text"
-              autocomplete="off"
-              placeholder="정답을 입력하세요"
-            />
-
-            <button id="submitBtn" class="primary-btn">
+            <button id="customSubmitBtn" class="primary-btn">
               정답 확인
             </button>
+          </div>
 
-            <button id="hintBtn" class="ghost-btn">
-              힌트 보기
-            </button>
+          <div id="missionHintBox" class="hint-box hidden">
+            <strong>힌트</strong>
+            <p id="missionHint"></p>
+          </div>
 
+          <div class="answer-area">
+            <label for="answerInput">암호 입력</label>
+            <input id="answerInput" type="text" autocomplete="off" placeholder="정답을 입력하세요" />
+
+            <button id="submitBtn" class="primary-btn">정답 확인</button>
+            <button id="hintBtn" class="ghost-btn">힌트 보기</button>
           </div>
 
           <p id="feedback" class="feedback"></p>
-
         </article>
 
         <section class="status-card">
-
           <div>
             <span>현재 이름</span>
             <strong id="currentTeam">-</strong>
           </div>
-
           <div>
             <span>힌트 사용</span>
             <strong id="hintCount">0회</strong>
           </div>
-
           <div>
             <span>진행률</span>
             <strong id="missionCount">1/7</strong>
           </div>
-
         </section>
 
       </div>
-
     </section>
 
-
-    <!-- 엔딩 -->
     <section id="endingScreen" class="screen">
-
       <div class="ending-card">
-
-        <p class="eyebrow">
-          RECORD RESTORED
-        </p>
-
+        <p class="eyebrow">RECORD RESTORED</p>
         <h2>기록 복구 완료</h2>
 
-        <p id="endingText">
-          도서관 시스템이 정상화되었습니다.
-        </p>
+        <p id="endingText">도서관 시스템이 정상화되었습니다.</p>
 
         <div class="result-box">
-
           <div>
             <span>이름</span>
             <strong id="resultTeam">-</strong>
           </div>
-
           <div>
             <span>소요 시간</span>
             <strong id="resultTime">-</strong>
           </div>
-
           <div>
             <span>힌트 사용</span>
             <strong id="resultHints">-</strong>
           </div>
-
         </div>
 
-        <button id="showRankingBtn" class="primary-btn">
-          랭킹 확인
-        </button>
-
-        <button id="restartBtn" class="ghost-btn">
-          처음부터 다시
-        </button>
+        <button id="showRankingBtn" class="primary-btn">랭킹 확인</button>
+        <button id="restartBtn" class="ghost-btn">처음부터 다시</button>
 
         <div class="reward-notice">
           <p>💕화면 캡처해서 도서실로 오세요^^</p>
-          <p>간식을 드립니다!+도서대출까지 하면 더드립니다!</p>
-          <p>(*선착순, 상품 소진 시 마감)</p>
+          <p>간식을 드립니다!+도서대출까지 하면 더드립니다!(*선착순, 상품 소진 시 마감)</p>
         </div>
-
       </div>
-
     </section>
 
-
-    <!-- 랭킹 -->
     <section id="rankingScreen" class="screen">
-
       <div class="ranking-card">
-
-        <p class="eyebrow">
-          ESCAPE RANKING
-        </p>
+        <p class="eyebrow">ESCAPE RANKING</p>
 
         <h2 class="ranking-title">
-
-          <img
-            src="logo.png"
-            class="ranking-title-icon"
-            alt="로고"
-          >
-
+          <img src="logo.png" class="ranking-title-icon" alt="로고">
           <span>실시간 랭킹</span>
-
-          <span class="ranking-title-emoji">
-            ✨
-          </span>
-
+          <span class="ranking-title-emoji">✨</span>
         </h2>
 
         <p class="ranking-desc">
@@ -342,24 +232,15 @@
         </p>
 
         <div id="rankingList" class="ranking-list">
-
-          <p class="empty-text">
-            랭킹을 불러오는 중...
-          </p>
-
+          <p class="empty-text">랭킹을 불러오는 중...</p>
         </div>
 
-        <button id="backBtn" class="primary-btn">
-          돌아가기
-        </button>
-
+        <button id="backBtn" class="primary-btn">돌아가기</button>
       </div>
-
     </section>
 
   </main>
 
   <div id="toast" class="toast"></div>
-
 </body>
 </html>

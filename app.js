@@ -411,6 +411,8 @@ els.hintBtn.addEventListener("click", () => {
 // =========================
 els.submitBtn.addEventListener("click", checkAnswer);
 
+$("customSubmitBtn").addEventListener("click", checkAnswer);
+
 function normalize(str) {
   return str.trim().replace(/\s+/g, "");
 }
