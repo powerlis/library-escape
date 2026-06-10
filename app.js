@@ -14,12 +14,13 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "XXXX",
-  appId: "XXXX"
+  apiKey: "AIzaSyBQa3LJ7a7QPbDLR8NkFyBe-CM9Sg4C8RY",
+  authDomain: "library-escape.firebaseapp.com",
+  projectId: "library-escape",
+  storageBucket: "library-escape.firebasestorage.app",
+  messagingSenderId: "765610754235",
+  appId: "1:765610754235:web:4a9e941fa8313f20a8699e",
+  measurementId: "G-Z442XEZ08X"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -322,6 +323,8 @@ function startIntroTyping() {
 // =========================
 els.enterBtn.addEventListener("click", () => {
 
+  document.body.classList.add("dark-mode");
+
   showScreen("gameScreen");
 
   startGame();
@@ -347,6 +350,115 @@ function startGame() {
 
 
 // =========================
+// 게임 시작
+// =========================
+function startGame() {
+
+  state.currentMission = 0;
+  state.hintUsed = 0;
+
+  state.startedAt = Date.now();
+
+  els.currentTeam.textContent = state.teamName;
+
+  startTimer();
+
+  renderMission();
+}
+
+
+// =========================
+// 미션 타이핑 효과
+// =========================
+function typeMissionStory(text) {
+
+  els.missionStory.innerHTML = "";
+
+  const lines = text.split("\n");
+
+  let lineIndex = 0;
+  let charIndex = 0;
+  let currentLineElement = null;
+
+  function typeNextCharacter() {
+
+    if (lineIndex >= lines.length) {
+
+      const cursor =
+        els.missionStory.querySelector(".typing-cursor");
+
+      if (cursor)
+        cursor.classList.remove("typing-cursor");
+
+      return;
+    }
+
+    if (charIndex === 0) {
+
+      const oldCursor =
+        els.missionStory.querySelector(".typing-cursor");
+
+      if (oldCursor) {
+
+        oldCursor.classList.remove("typing-cursor");
+
+        oldCursor.classList.add("line-done");
+      }
+
+      currentLineElement =
+        document.createElement("span");
+
+      currentLineElement.className =
+        "typing-line typing-cursor";
+
+      els.missionStory.appendChild(currentLineElement);
+    }
+
+    const currentLineText = lines[lineIndex];
+
+    if (currentLineText.length === 0) {
+
+      currentLineElement.innerHTML = "&nbsp;";
+
+      currentLineElement.classList.remove("typing-cursor");
+
+      currentLineElement.classList.add("line-done");
+
+      lineIndex++;
+      charIndex = 0;
+
+      setTimeout(typeNextCharacter, 260);
+
+      return;
+    }
+
+    currentLineElement.textContent +=
+      currentLineText[charIndex];
+
+    charIndex++;
+
+    if (charIndex >= currentLineText.length) {
+
+      currentLineElement.classList.remove("typing-cursor");
+
+      currentLineElement.classList.add("line-done");
+
+      lineIndex++;
+      charIndex = 0;
+
+      setTimeout(typeNextCharacter, 430);
+
+    } else {
+
+      setTimeout(typeNextCharacter, 45);
+    }
+  }
+
+  typeNextCharacter();
+}
+
+
+// =========================
 // 미션 렌더
 // =========================
 function renderMission() {
@@ -355,7 +467,7 @@ function renderMission() {
 
   els.missionTitle.textContent = mission.title;
   els.missionTag.textContent = mission.tag;
-  els.missionStory.textContent = mission.story;
+  typeMissionStory(mission.story);
 
   els.feedback.textContent = "";
 
@@ -533,7 +645,10 @@ async function completeGame() {
 
   clearInterval(state.timerInterval);
 
+  document.body.classList.remove("dark-mode");
+
   const used =
+    Math.floor((Date.now() - state.startedAt) / 1000);
     Math.floor((Date.now() - state.startedAt) / 1000);
 
   const min =
@@ -585,6 +700,8 @@ async function completeGame() {
 // 실패
 // =========================
 function failGame() {
+
+  document.body.classList.add("dark-mode");
 
   els.resultTeam.textContent =
     state.teamName;
