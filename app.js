@@ -103,7 +103,7 @@ const state = {
 // 행사 접속 시간 제한
 // 2026년 10월 15일 오전 9시 (한국시간)
 // =========================
-const EVENT_OPEN_TIME = new Date("2026-09-22T09:00:00+09:00");
+const EVENT_OPEN_TIME = new Date("2026-09-23T09:00:00+09:00");
 
 function createEventWaitingOverlay() {
   if (document.getElementById("eventWaitingOverlay")) return;
