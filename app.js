@@ -558,8 +558,13 @@ function typeMissionStory(text) {
 // 미션 렌더
 // =========================
 function renderMission() {
-
   const mission = missions[state.currentMission];
+
+  // 이전 미션의 힌트 초기화
+  missionHintBox.classList.add("hidden");
+  missionHint.textContent = "";
+
+  // 이하 기존 코드 그대로
 
   els.missionTitle.textContent = mission.title;
   els.missionTag.textContent = mission.tag;
