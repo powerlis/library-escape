@@ -78,6 +78,8 @@ const els = {
   resultHints: $("resultHints"),
 
   rankingList: $("rankingList"),
+  myRankBox: $("myRankBox"),
+  totalParticipants: $("totalParticipants"),
 
   showRankingBtn: $("showRankingBtn"),
   restartBtn: $("restartBtn"),
@@ -97,7 +99,8 @@ const state = {
   hintUsed: 0,
   startedAt: null,
   timerInterval: null,
-  teamName: ""
+  teamName: "",
+  rankingDocId: null
 };
 
 // =========================
@@ -775,7 +778,7 @@ async function completeGame() {
 
   try {
 
-    await addDoc(
+    const savedRanking = await addDoc(
       collection(db, "escapeRankings"),
       {
         name: state.teamName,
@@ -784,6 +787,8 @@ async function completeGame() {
         createdAt: Date.now()
       }
     );
+
+    state.rankingDocId = savedRanking.id;
 
   } catch (e) {
     console.error(e);
@@ -835,18 +840,20 @@ els.showRankingBtn.addEventListener("click", openRanking);
 async function openRanking() {
 
   document.body.classList.remove("dark-mode");
-
   showScreen("rankingScreen");
 
   els.rankingList.innerHTML =
     `<p class="empty-text">불러오는 중...</p>`;
 
+  els.myRankBox.classList.add("hidden");
+  els.myRankBox.innerHTML = "";
+  els.totalParticipants.textContent = "";
+
   try {
 
     const q = query(
       collection(db, "escapeRankings"),
-      orderBy("usedTime", "asc"),
-      limit(30)
+      orderBy("usedTime", "asc")
     );
 
     const snapshot = await getDocs(q);
@@ -854,26 +861,30 @@ async function openRanking() {
     if (snapshot.empty) {
       els.rankingList.innerHTML =
         `<p class="empty-text">랭킹이 없습니다.</p>`;
+      els.totalParticipants.textContent = "전체 참가자 0명";
       return;
     }
 
+    const rankings = [];
+
+    snapshot.forEach(docSnap => {
+      const data = docSnap.data();
+
+      rankings.push({
+        id: docSnap.id,
+        name: data.name || data.teamName || "이름 없음",
+        usedTime: data.usedTime || 0,
+        hints: data.hints ?? data.hintUsed ?? 0
+      });
+    });
+
+    els.totalParticipants.textContent =
+      `전체 참가자 ${rankings.length}명`;
+
     els.rankingList.innerHTML = "";
 
-    let rank = 1;
-
-    snapshot.forEach(doc => {
-
-      const data = doc.data();
-
-      const displayName =
-        data.name || data.teamName || "이름 없음";
-
-      const usedTime =
-        data.usedTime || 0;
-
-      const hintCount =
-        data.hints ?? data.hintUsed ?? 0;
-
+    rankings.slice(0, 10).forEach((data, index) => {
+      const rank = index + 1;
       const item = document.createElement("div");
       item.className = "rank-item";
 
@@ -881,17 +892,41 @@ async function openRanking() {
         <div class="rank-num">${rank}</div>
 
         <div>
-          <div class="rank-team">${escapeHtml(displayName)}</div>
-          <div class="rank-meta">힌트 ${hintCount}회 사용</div>
+          <div class="rank-team">${escapeHtml(data.name)}</div>
+          <div class="rank-meta">힌트 ${data.hints}회 사용</div>
         </div>
 
-        <div class="rank-time">${formatRankingTime(usedTime)}</div>
+        <div class="rank-time">${formatRankingTime(data.usedTime)}</div>
       `;
 
       els.rankingList.appendChild(item);
-
-      rank++;
     });
+
+    // 방금 게임을 완료한 참가자라면 자신의 전체 순위를 별도로 표시
+    if (state.rankingDocId) {
+      const myIndex =
+        rankings.findIndex(item => item.id === state.rankingDocId);
+
+      if (myIndex !== -1) {
+        const mine = rankings[myIndex];
+        const myRank = myIndex + 1;
+
+        els.myRankBox.innerHTML = `
+          <div class="my-rank-label">🎯 나의 순위</div>
+          <div class="my-rank-main">
+            <strong>${myRank}위</strong>
+            <span>/ 전체 ${rankings.length}명</span>
+          </div>
+          <div class="my-rank-detail">
+            <span>${escapeHtml(mine.name)}</span>
+            <span>${formatRankingTime(mine.usedTime)}</span>
+            <span>힌트 ${mine.hints}회</span>
+          </div>
+        `;
+
+        els.myRankBox.classList.remove("hidden");
+      }
+    }
 
   } catch (e) {
 
@@ -899,6 +934,8 @@ async function openRanking() {
 
     els.rankingList.innerHTML =
       `<p class="empty-text">랭킹을 불러오지 못했습니다.</p>`;
+
+    els.totalParticipants.textContent = "";
   }
 }
 
