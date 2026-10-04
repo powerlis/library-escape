@@ -1077,3 +1077,62 @@ body.dark-mode .inline-hint {
   font-weight: 900;
   cursor: pointer;
 }
+
+/* =========================
+   TOP 10 + 나의 순위
+========================= */
+
+.my-rank-box {
+  margin: 22px 0 10px;
+  padding: 18px 16px;
+  border: 2px solid #ffe58a;
+  border-radius: 22px;
+  background: #fff7d7;
+  text-align: center;
+}
+
+.my-rank-label {
+  margin-bottom: 6px;
+  font-family: "Noto Sans KR", sans-serif;
+  font-size: 0.92rem;
+  font-weight: 900;
+  color: #8a6200;
+}
+
+.my-rank-main {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 6px;
+}
+
+.my-rank-main strong {
+  font-family: "Noto Sans KR", sans-serif;
+  font-size: 1.7rem;
+  font-weight: 900;
+  color: var(--blue);
+}
+
+.my-rank-main span {
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.my-rank-detail {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 7px 12px;
+  font-size: 0.84rem;
+  font-weight: 800;
+  color: #344054;
+}
+
+.total-participants {
+  margin: 10px 0 18px;
+  color: var(--muted);
+  font-family: "Noto Sans KR", sans-serif;
+  font-size: 0.86rem;
+  font-weight: 800;
+}
