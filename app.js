@@ -62,6 +62,7 @@ const els = {
   hintBtn: $("hintBtn"),
 
   feedback: $("feedback"),
+  customFeedback: $("customFeedback"),
 
   progressBar: $("progressBar"),
 
@@ -560,17 +561,20 @@ function typeMissionStory(text) {
 function renderMission() {
   const mission = missions[state.currentMission];
 
-  // 이전 미션의 힌트 초기화
+  const missionHintBox = $("missionHintBox");
+  const missionHint = $("missionHint");
+
   missionHintBox.classList.add("hidden");
   missionHint.textContent = "";
 
-  // 이하 기존 코드 그대로
+  els.feedback.textContent = "";
+  els.customFeedback.textContent = "";
+  els.feedback.className = "feedback";
+  els.customFeedback.className = "feedback";
 
   els.missionTitle.textContent = mission.title;
   els.missionTag.textContent = mission.tag;
   typeMissionStory(mission.story);
-
-  els.feedback.textContent = "";
 
   els.missionCount.textContent =
     `${state.currentMission + 1}/${missions.length}`;
@@ -578,33 +582,24 @@ function renderMission() {
   els.progressBar.style.width =
     `${((state.currentMission + 1) / missions.length) * 100}%`;
 
-if (mission.customMission) {
+  if (mission.customMission) {
+    els.customMissionBox.classList.remove("hidden");
+    document.querySelector(".answer-area").classList.add("hidden");
 
-  els.customMissionBox.classList.remove("hidden");
+    els.hintText1.textContent = mission.hint1;
+    els.hintText2.textContent = mission.hint2;
 
-  document.querySelector(".answer-area")
-    .classList.add("hidden");
+    $("hintText1").classList.remove("show");
+    $("hintText2").classList.remove("show");
 
-  els.hintText1.textContent = mission.hint1;
-  els.hintText2.textContent = mission.hint2;
-
-  $("hintText1").classList.remove("show");
-  $("hintText2").classList.remove("show");
-
-  els.answerInput1.value = "";
-  els.answerInput2.value = "";
-
+    els.answerInput1.value = "";
+    els.answerInput2.value = "";
   } else {
-
-  els.customMissionBox.classList.add("hidden");
-
-  $("missionHintBox").classList.add("hidden");
-
-  document.querySelector(".answer-area")
-    .classList.remove("hidden");
-
-  els.answerInput.value = "";
-}
+    els.customMissionBox.classList.add("hidden");
+    $("missionHintBox").classList.add("hidden");
+    document.querySelector(".answer-area").classList.remove("hidden");
+    els.answerInput.value = "";
+  }
 }
 
 
@@ -652,67 +647,49 @@ function normalize(str) {
 }
 
 function checkAnswer() {
-
   const mission = missions[state.currentMission];
-
   let isCorrect = false;
 
   if (mission.customMission) {
+    const answer1 = normalize(els.answerInput1.value);
+    const answer2 = normalize(els.answerInput2.value);
 
-    const answer1 =
-      normalize(els.answerInput1.value);
-
-    const answer2 =
-      normalize(els.answerInput2.value);
+    if (!answer1 || !answer2) {
+      toast("정답을 모두 입력해 주세요.");
+      return;
+    }
 
     const correct1 =
-      mission.answer1.some(
-        ans => normalize(ans) === answer1
-      );
-
+      mission.answer1.some(ans => normalize(ans) === answer1);
     const correct2 =
-      mission.answer2.some(
-        ans => normalize(ans) === answer2
-      );
+      mission.answer2.some(ans => normalize(ans) === answer2);
 
     isCorrect = correct1 && correct2;
-
   } else {
-
-    const userAnswer =
-      normalize(els.answerInput.value);
+    const userAnswer = normalize(els.answerInput.value);
 
     if (!userAnswer) {
-
       toast("정답을 입력해 주세요.");
       return;
     }
 
     isCorrect =
-      mission.answer.some(
-        ans => normalize(ans) === userAnswer
-      );
+      mission.answer.some(ans => normalize(ans) === userAnswer);
   }
 
+  const feedbackEl =
+    mission.customMission ? els.customFeedback : els.feedback;
+
   if (!isCorrect) {
-
-    els.feedback.textContent =
-      "암호가 맞지 않습니다.";
-
-    els.feedback.className =
-      "feedback no";
-
+    feedbackEl.textContent = "암호가 맞지 않습니다.";
+    feedbackEl.className = "feedback no";
     return;
   }
 
-  els.feedback.textContent =
-    "정답입니다.";
-
-  els.feedback.className =
-    "feedback ok";
+  feedbackEl.textContent = "정답입니다.";
+  feedbackEl.className = "feedback ok";
 
   setTimeout(() => {
-
     state.currentMission++;
 
     if (state.currentMission >= missions.length) {
@@ -720,7 +697,6 @@ function checkAnswer() {
     } else {
       renderMission();
     }
-
   }, 700);
 }
 
